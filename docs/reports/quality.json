@@ -1,0 +1,25 @@
+{
+  "source_lines": 219121,
+  "unique_processes": 219121,
+  "repeated_process_snapshots": 0,
+  "award_rows": 173551,
+  "supplier_links": 215199,
+  "registered_identity_collisions": 4692,
+  "exclusion_counts": {
+    "": 155350,
+    "award_date": 13929,
+    "amount": 4272
+  },
+  "missing_supplier_awards": 0,
+  "multi_supplier_awards": 6245,
+  "unknown_supplier_links": 353,
+  "contracts": {
+    "unique_award_keys": true,
+    "no_orphan_supplier_links": true,
+    "attribution_unique": true,
+    "annual_count_conserves": true,
+    "value_conserves": true,
+    "concentration_bounds": true,
+    "no_multi_award_attribution": true
+  }
+}

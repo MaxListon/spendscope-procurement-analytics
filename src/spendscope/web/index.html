@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Real public procurement data, supplier concentration and reproducible R analysis."
+    />
+    <title>SpendScope — Procurement intelligence</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to analysis</a>
+    <header>
+      <a class="brand" href="#overview"
+        ><span class="mark">S</span> SpendScope<span class="edition"
+          >PUBLIC PROCUREMENT INTELLIGENCE</span
+        ></a
+      ><a href="research.html" class="research-link">R report ↗</a>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">CONTRACTS FINDER / 2022–2024</p>
+          <h1>Follow the awards.<br /><em>Understand the exposure.</em></h1>
+          <p class="intro">
+            Explore public contract awards, supplier concentration, and the
+            limits behind the numbers.
+          </p>
+        </div>
+        <aside class="scope">
+          <span class="pulse"></span> REAL SOURCE RECORDS
+          <p>Awarded value ≠ actual spending.</p>
+          <small
+            >Selected compiled snapshots · GBP · active awards<br />Source
+            snapshot retrieved 12 November 2026</small
+          >
+        </aside>
+      </section>
+      <nav aria-label="Analysis sections">
+        <button data-view="overview" aria-pressed="true">01 / Overview</button
+        ><button data-view="buyers" aria-pressed="false">
+          02 / Buyer exposure</button
+        ><button data-view="suppliers" aria-pressed="false">
+          03 / Suppliers</button
+        ><button data-view="awards" aria-pressed="false">
+          04 / Source explorer</button
+        ><button data-view="methods" aria-pressed="false">
+          05 / Trust & methods
+        </button>
+      </nav>
+      <div id="status" role="status">Loading verified analysis…</div>
+      <section id="overview" class="view">
+        <div id="kpis" class="kpis"></div>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE</p>
+            <h2>What was awarded?</h2>
+          </div>
+          <span class="pill">Recorded commitments, not payments</span>
+        </div>
+        <div class="two">
+          <article class="panel">
+            <h3>Recorded award value by year</h3>
+            <p class="muted">
+              Award date determines year. Coverage reflects selected snapshots.
+            </p>
+            <div id="annual-chart"></div>
+          </article>
+          <article class="panel accent">
+            <p class="eyebrow">READ THE DENOMINATOR</p>
+            <h3>Concentration is only as useful as its coverage.</h3>
+            <p>
+              Joint awards remain in headline totals. Supplier concentration
+              uses only awards with one named, non-colliding supplier.
+            </p>
+            <p>
+              Buyer comparisons require at least 30 attributable awards and 80%
+              value coverage.
+            </p>
+            <a href="#buyers">Explore buyer exposure →</a>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="section-title">
+            <div>
+              <h3>Typical award size, with uncertainty</h3>
+              <p class="muted">
+                Executed R analysis · median and 95% bootstrap percentile
+                intervals
+              </p>
+            </div>
+            <a href="research.html">Read analysis ↗</a>
+          </div>
+          <img
+            class="chart"
+            src="category-analysis.svg"
+            alt="R chart of median award values and uncertainty by category and year"
+          />
+        </article>
+        <div class="panel">
+          <h3>Questions this analysis supports</h3>
+          <div class="three">
+            <p>
+              <strong>Supplier dependency</strong><br />Which buyers concentrate
+              attributable award value in a few suppliers?
+            </p>
+            <p>
+              <strong>Category mix</strong><br />Are headline totals driven by
+              typical awards or a handful of large commitments?
+            </p>
+            <p>
+              <strong>Evidence quality</strong><br />Where do missing identities
+              and joint awards limit comparisons?
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="buyers" class="view" hidden>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">SUPPLIER DEPENDENCY</p>
+            <h2>Buyer exposure</h2>
+          </div>
+          <button id="export-buyers" class="secondary">
+            Download filtered CSV ↓
+          </button>
+        </div>
+        <p class="explain">
+          HHI is the sum of squared supplier value shares × 10,000. Higher
+          values mean more concentration within the attributable subset. It is
+          not a fraud score or a market-wide competition measure.
+        </p>
+        <div class="filters">
+          <label
+            >Find a buyer<input
+              id="buyer-search"
+              type="search"
+              placeholder="Search organization…" /></label
+          ><label
+            >Coverage filter<select id="buyer-support">
+              <option value="supported">Supported comparisons only</option>
+              <option value="all">
+                All buyers, including limited coverage
+              </option>
+            </select></label
+          ><label
+            >Sort by<select id="buyer-sort">
+              <option value="attributed_value">Attributable value</option>
+              <option value="hhi">Concentration (HHI)</option>
+              <option value="top1_share">Largest supplier share</option>
+            </select></label
+          >
+        </div>
+        <p id="buyer-count" class="muted"></p>
+        <div id="buyer-table" class="table-wrap"></div>
+        <p class="muted">
+          All years combined. Supplier names are normalized conservatively;
+          name-only identities are provisional. Related corporate entities are
+          not consolidated.
+        </p>
+      </section>
+      <section id="suppliers" class="view" hidden>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">ATTRIBUTABLE AWARDS</p>
+            <h2>Supplier landscape</h2>
+          </div>
+          <a href="reports/supplier_summary.csv">Full supplier CSV ↓</a>
+        </div>
+        <p class="explain">
+          Top 200 identities by sole-supplier award value. These are recorded
+          award commitments—not supplier revenue. Name-only matches can merge
+          unrelated organizations with identical names or split aliases.
+        </p>
+        <label class="search-label"
+          >Find a supplier<input
+            id="supplier-search"
+            type="search"
+            placeholder="Search supplier…"
+        /></label>
+        <div id="supplier-table" class="table-wrap"></div>
+      </section>
+      <section id="awards" class="view" hidden>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">TRACE THE EVIDENCE</p>
+            <h2>Largest recorded awards</h2>
+          </div>
+          <span class="pill">Top 200 eligible records</span>
+        </div>
+        <p class="explain">
+          Large figures can include framework ceilings and multi-year contracts.
+          Follow the published notice before interpreting the amount.
+        </p>
+        <label class="search-label"
+          >Search award or buyer<input
+            id="award-search"
+            type="search"
+            placeholder="Search titles or organizations…"
+        /></label>
+        <div id="award-table" class="table-wrap"></div>
+      </section>
+      <section id="methods" class="view" hidden>
+        <p class="eyebrow">REPRODUCIBLE BY DESIGN</p>
+        <h2>Trust the process. Inspect the limits.</h2>
+        <div class="two">
+          <article class="panel">
+            <h3>Coverage & checks</h3>
+            <div id="quality"></div>
+          </article>
+          <article class="panel">
+            <h3>Analytical rules</h3>
+            <ol>
+              <li>Verify SHA-256 fingerprints of three pinned source files.</li>
+              <li>
+                Retain the latest available compiled snapshot per process across
+                the selected files.
+              </li>
+              <li>
+                Count each process + award ID once. Keep every excluded award
+                with its exclusion reason.
+              </li>
+              <li>
+                Restrict headline metrics to active, positive GBP awards dated
+                2022–2024.
+              </li>
+              <li>
+                Attribute only sole-supplier awards with a usable identity.
+                Exclude registered ID/name conflicts from attribution.
+              </li>
+              <li>
+                Run SQL conservation checks and R sensitivity analysis before
+                updating output files.
+              </li>
+            </ol>
+          </article>
+        </div>
+        <article class="panel">
+          <h3>What this cannot establish</h3>
+          <p>
+            These snapshots are not a complete historical register of all UK
+            procurement. Award values are not transactions; multi-award
+            processes and frameworks may still represent overlapping economic
+            commitments. Missingness, publication rules and revisions can change
+            apparent trends. No realized savings, supplier performance,
+            misconduct, or causal effects are inferred.
+          </p>
+          <p>
+            Concentration describes a buyer's observed attributable
+            portfolio—not a legally defined market. Bidder-count comparisons and
+            renewal recommendations are deferred until source coverage can
+            support them.
+          </p>
+        </article>
+        <article class="panel">
+          <h3>Source & downloads</h3>
+          <p>
+            UK Contracts Finder, compiled by the Open Contracting Partnership.
+            Contains public sector information licensed under the
+            <a
+              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+              >Open Government Licence v3.0</a
+            >.
+          </p>
+          <div class="download-links">
+            <a href="https://data.open-contracting.org/en/publication/128"
+              >Source registry ↗</a
+            ><a href="reports/annual.csv">Annual metrics</a
+            ><a href="reports/buyer_concentration.csv">Buyer metrics</a
+            ><a href="reports/category_sensitivity.csv">R sensitivity results</a
+            ><a href="reports/quality.json">Quality report</a
+            ><a href="reports/build_manifest.json">Build manifest</a>
+          </div>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <strong>SpendScope</strong
+      ><span>SQL · Python · R / Research portfolio by MaxListon</span
+      ><a href="research.html">Statistical research note ↗</a>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>

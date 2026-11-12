@@ -1,0 +1,4 @@
+docs/** linguist-generated=true
+reports/** linguist-generated=true
+reports/R-session.txt -whitespace
+docs/reports/R-session.txt -whitespace

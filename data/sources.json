@@ -1,0 +1,26 @@
+{
+  "publisher": "UK Contracts Finder; compiled by Open Contracting Partnership",
+  "registry": "https://data.open-contracting.org/en/publication/128",
+  "license": "Open Government Licence v3.0",
+  "retrieved": "2026-11-12",
+  "files": [
+    {
+      "year": 2022,
+      "url": "https://fastly.data.open-contracting.org/downloads/united_kingdom_contracts_finder_releases/4370/2022.jsonl.gz",
+      "sha256": "0f5307878daf7d6cf11f812543fd330bcda269dd62e95c79a59e1d74ecf1ad06",
+      "bytes": 45312060
+    },
+    {
+      "year": 2023,
+      "url": "https://fastly.data.open-contracting.org/downloads/united_kingdom_contracts_finder_releases/4370/2023.jsonl.gz",
+      "sha256": "37bcbb4b40b8d037c83dd6a4c6722c669c12edacb54b85bc17ae732c92f38a07",
+      "bytes": 49008792
+    },
+    {
+      "year": 2024,
+      "url": "https://fastly.data.open-contracting.org/downloads/united_kingdom_contracts_finder_releases/4370/2024.jsonl.gz",
+      "sha256": "e0e05a2a8aff108c2f510429af43c546622296706bfea5a8a83d5349c3213701",
+      "bytes": 46953675
+    }
+  ]
+}
