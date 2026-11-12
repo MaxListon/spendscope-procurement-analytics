@@ -241,7 +241,9 @@ def build(root, offline=False):
             str(f.relative_to(root)): sha(f)
             for folder in ("src", "sql", "R")
             for f in sorted((root / folder).rglob("*"))
-            if f.is_file() and "__pycache__" not in str(f)
+            if f.is_file()
+            and "__pycache__" not in str(f)
+            and f.suffix in {".py", ".html", ".css", ".js", ".sql", ".R"}
         }
         for f in ("data/sources.json", "pyproject.toml", "requirements-lock.txt"):
             inputs[f] = sha(root / f)

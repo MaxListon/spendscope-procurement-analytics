@@ -65,6 +65,8 @@ Name-only supplier matches are provisional. Exact normalized names can still mer
 | `PROJECT_PLAN.md` | Twelve-to-sixteen-week development and validation roadmap |
 | `INTERVIEW_GUIDE.md` | How to explain the decisions and limitations |
 
+See [the executive memo](EXECUTIVE_MEMO.md) for evidence-linked findings and [verification](VERIFICATION.md) for completed checks and remaining validation.
+
 ## Source and license
 
 Source: [Contracts Finder / OCP registry](https://data.open-contracting.org/en/publication/128). Contains public sector information licensed under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). OCP compiles the process snapshots; `data/sources.json` records exact source URLs, retrieval date and hashes. Data authorship remains with the original publishers.

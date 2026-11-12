@@ -6,9 +6,9 @@ Local v0.1.0 verification completed:
 - Rebuilt from all 219,121 process snapshots, normalizing 173,551 award records and retaining 155,350 eligible awards.
 - Seven SQL runtime contracts passed, including award-key uniqueness, no orphan supplier links, no joint-award attribution and count/value conservation.
 - Installed the Python project and its dependencies in a fresh virtual environment, then completed a full offline source rebuild with executed R analysis.
-- 30 Python tests passed, including known-answer HHI, failure-safe staging, malformed inputs, identity conflicts, missing static assets and artifact integrity.
+- 31 Python tests passed, including known-answer HHI, failure-safe staging, malformed inputs, identity conflicts, missing static assets and artifact integrity.
 - R concentration regression checks passed. R recomputed SQL HHI for the 30 supported buyer case studies within relative tolerance 1e-8.
-- JavaScript syntax check passed. Fingerprint verification passed for 18 analysis inputs and 34 generated outputs; published manifest copies match.
+- JavaScript syntax check passed. Fingerprint verification passed for 13 analysis inputs and 34 generated outputs; published manifest copies match.
 - Browser checks: buyer search narrowed to one matching Hampshire buyer, filtered CSV download completed, R research note displayed both tables and its chart, and layouts at 375/1024/1440 pixels had no document-level horizontal overflow. Wide tables scroll inside their containers.
 - Analysis tabs hide the overview hero to keep analytical controls visible.
 

@@ -44,3 +44,11 @@ def test_executed_r_has_substantial_outputs():
 
 def test_artifact_fingerprints():
     subprocess.run([sys.executable, str(ROOT / "scripts/verify.py")], check=True)
+
+
+def test_manifest_contains_only_portable_analysis_inputs():
+    manifest = json.loads((ROOT / "reports/build_manifest.json").read_text())
+    assert all(
+        ".egg-info/" not in name and "__pycache__/" not in name
+        for name in manifest["inputs"]
+    )
