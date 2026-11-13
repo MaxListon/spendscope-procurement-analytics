@@ -2,9 +2,9 @@
 
 **Public procurement analytics with SQL, Python and R: follow the evidence behind supplier concentration.**
 
-[Dashboard](https://maxliston.github.io/spendscope-procurement-analytics/) · [Executed R research](https://maxliston.github.io/spendscope-procurement-analytics/research.html) · [Business case studies](https://maxliston.github.io/spendscope-procurement-analytics/case-studies.html)
+[Dashboard files](docs/) · [Executed R research](docs/research.html) · [Business case studies](EXECUTIVE_MEMO.md) · [Checks workflow](.github/workflows/checks.yml)
 
-[![Checks](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml/badge.svg)](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml)
+Public GitHub and dashboard publication awaits explicit public-access approval. All code, data evidence and rendered reports are available in this checkout and release archive.
 
 ![Dashboard preview](docs/dashboard-preview.png)
 

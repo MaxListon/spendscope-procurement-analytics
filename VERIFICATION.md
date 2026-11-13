@@ -11,6 +11,7 @@
 - 59 Python tests passed, including targeted review counterexamples, known-answer concentration, invalid registrations, failed-build preservation, static dependencies, artifact integrity and analytical comparison failures.
 - Executed R regression checks passed for HHI, weighted medians, literal-expansion equivalence and preservation of whole-process award multiplicities.
 - Executed 500 procurement-process resamples per category-year and 300 per top supported buyer; independently reproduced SQL HHI and published independent-award alternatives.
+- Installed the built v0.2 wheel in a separate fresh Python environment and completed another full offline data/R rebuild. The complete analytical JSON matched the committed baseline at relative tolerance 1e-10 / absolute tolerance 1e-7; all 59 tests and R regression checks passed again.
 - Verified 22 analysis inputs and 47 generated artifacts, including versioned evidence and generated case studies. Published manifest copies agree.
 
 ## Remote and user review
