@@ -2,7 +2,7 @@
 
 ## Build
 
-Follow the README from the source checkout. The pipeline verifies archive fingerprints, builds a fresh warehouse, applies versioned evidence gates, executes nine SQL contracts, runs R and writes reports/dashboard assets. All computations must finish before publication begins. A single-writer lock prevents concurrent builds.
+Follow the README from the source checkout. The pipeline verifies archive fingerprints, builds a fresh warehouse, applies versioned evidence gates, executes ten SQL contracts, runs R and writes reports/dashboard assets. All computations must finish before publication begins. A single-writer lock prevents concurrent builds.
 
 Outputs are replaced per file, not as a multi-file transaction. Do not serve the directory during a rebuild; deploy a completed, verified Git commit. A crash during replacement requires a rebuild and artifact verification. Failed computations preserve the prior published files; a regression test exercises that failure case.
 
@@ -34,3 +34,15 @@ A static deployment has no background updates. Source refreshes require reviewed
 ## Release
 
 Run Python/R tests, full-source rebuild, result comparison and artifact verification; check mobile/desktop filters, downloads, evidence tables and R report; inspect attribution/coverage changes; review tracked files and Git author; then commit, publish and verify the remote checks, deployed content and listed contributors. Source publishers retain their data attribution separately from Git authorship.
+
+## Source-refresh review gate
+
+A same-source rebuild and a source update answer different questions. Strict `compare_results.py` remains mandatory for reproducibility on the same pinned archives. For a deliberately acquired candidate snapshot, preserve the released `reports/analysis.json` and compare:
+
+```sh
+python scripts/review_refresh.py /path/to/released-analysis.json /path/to/candidate-analysis.json --output /tmp/refresh-review.json
+```
+
+Exit 0 means no configured material change was detected; it never grants approval. Exit 2 means manual review is required; exit 1 means the comparison failed. Fingerprint changes always require revalidating the old baseline and audit frame. Operational flags include >5% changes in awards/value, >2 percentage points in attribution coverage, buyer population/support transitions and >500-point buyer HHI changes. These are review heuristics, not statistical tests. The report includes the largest HHI changes and before/after metrics even when a flag is not triggered.
+
+Do not overwrite production source files to experiment with a candidate. Use a separate checkout; preserve prior sources and evidence. A newer procurement snapshot has not been acquired for v0.4. The shipped analysis still uses the three original pinned files.

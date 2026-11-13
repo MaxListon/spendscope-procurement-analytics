@@ -1,20 +1,19 @@
-# Verification record — v0.3, 12 November 2026
+# Verification record — v0.4, 13 November 2026
 
 ## Completed locally
 
-- Verified three pinned real-source archives; rebuilt 219,121 processes and 155,350 eligible awards.
-- Preserved headline award totals while applying explicit placeholder, registration and evidence gates.
-- Retained the 31 targeted registration/name decisions and 20 observed large-notice checks from v0.2.
-- Reproduced a frozen 40-registration sample from 11,517 previously unreviewed identities. Recorded 36 compatible registry-name cases, two name conflicts and two unobserved records, with both denominators, Wilson intervals and missing-evidence bounds. Conflict holdbacks do not erase source records or retroactively improve the frozen audit rate.
-- Audited 249 related-process declarations: all lack usable OCID identifiers; no cross-process edges are invented.
-- Added buyer-clustered median and calendar-quarter HHI alternatives, alongside the main process-clustered intervals, process-link coverage and a dependence-comparison figure.
-- 72 Python tests passed, including known-answer concentration, frozen-sample tampering, missing-link counterexamples, failure-safe staging, numerical comparison and artifact verification.
-- R HHI, weighted median, literal-expansion, process, buyer and calendar-cluster regression checks passed.
-- Ten SQL runtime contracts passed, including no attribution to registry-name conflicts, placeholders or joint awards.
-- The prior v0.2 release was independently rebuilt from its installed wheel in a fresh local environment. Its numerical comparison passed; v0.3 is subject to the remote wheel-based full-source rebuild before deployment.
+- Rebuilt the three pinned real-source archives: 219,121 processes and 155,350 eligible awards. All ten SQL runtime contracts passed.
+- Preserved the original frozen 40-case audit and extended its hash ordering to 200 identities. Observed 160 additional official registry pages: 134 current/former-name agreements, 21 follow-up cases, five unavailable pages. These automated outcomes are not human-reviewed accuracy labels. No attribution changed automatically.
+- Validated the expanded frame, order, supplier names, evidence URLs, timestamps, classifications and observation fingerprints. Tampering and missing observations fail closed.
+- Added source-refresh review with explicit exit statuses, source-change flags, coverage shifts, support transitions and HHI changes. The actual comparison with v0.3 reports no material metric changes; no newer procurement snapshot is claimed.
+- 92 Python tests passed, including invalid refresh candidates, sample tampering, grain conservation, staged failure recovery and artifact fingerprints.
+- R regression checks passed. Full-source analysis still executes process, buyer and quarter sensitivity; this upgrade does not replace R with name screening.
+- Verified 31 analysis inputs and 57 generated outputs against their fingerprints.
+- Browser-checked the new walkthrough and evidence view at 375px: no document overflow; all 26 follow-up rows render; no browser error logs. Desktop walkthrough also has no document overflow. These are developer checks, not completed participant testing or a full accessibility audit.
+- Added a generated decision worksheet, architecture tour, validation protocol and task-based usability packet. Feedback template remains empty.
 
-## Publication and independent review
+## Publication and review boundaries
 
-Public GitHub and dashboard publication are explicitly authorized. The remote Checks run and deployment must be verified against the release commit before success is reported.
+GitHub publication is authorized. Check the exact commit's remote Checks and Dashboard runs before reporting deployment success. An independently rebuilt wheel on GitHub must reproduce the committed analysis before Pages publishes.
 
-An outside-review packet is included. No independent professional feedback, population precision/recall of all supplier matching, actual payment analysis or realized business impact is claimed.
+No independent professional feedback, completed participant study, general matching precision/recall, actual payment analysis or realized savings is claimed. The reviewer and usability packets are prepared for real people; their responses remain outstanding.

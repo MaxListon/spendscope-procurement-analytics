@@ -2,11 +2,11 @@
 
 **Public procurement analytics with SQL, Python and R: follow the evidence behind supplier concentration.**
 
-[Live dashboard](https://maxliston.github.io/spendscope-procurement-analytics/) · [R research note](https://maxliston.github.io/spendscope-procurement-analytics/research.html) · [Business case studies](EXECUTIVE_MEMO.md)
+[Three-minute walkthrough](https://maxliston.github.io/spendscope-procurement-analytics/walkthrough.html) · [Live dashboard](https://maxliston.github.io/spendscope-procurement-analytics/) · [R research note](https://maxliston.github.io/spendscope-procurement-analytics/research.html) · [Business case studies](EXECUTIVE_MEMO.md)
 
 [![Checks](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml/badge.svg)](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml)
 
-![Dashboard preview](docs/dashboard-preview.png)
+![Three-minute walkthrough preview](docs/dashboard-preview.png)
 
 A procurement manager wants to know where award commitments are concentrated. Raw data contains joint awards, revision history, placeholder suppliers and inconsistent identifiers. SpendScope separates accounting grain from identity evidence so those problems stay visible instead of becoming confident rankings.
 
@@ -16,6 +16,8 @@ A procurement manager wants to know where award commitments are concentrated. Ra
 - **Substantial SQL:** independent award/supplier grains, reconciliation contracts, HHI and supplier shares, coverage gates, registration-evidence sensitivity, and nine comparison-threshold scenarios.
 - **Python engineering:** conservative identity rules, documented exact alias approvals, source-notice evidence checks, single-writer locking, staged computation, corruption/staleness verification and clean-release packaging.
 - **Random validation:** a frozen 40-identity sample from 11,517 previously unreviewed registrations; registry-name evidence, uncertainty intervals, nonresponse bounds and conflict holdbacks. This is not precision/recall of all supplier matching.
+- **Expanded evidence collection:** the same frozen sample extends to 200 identities. Another 160 automated official registry observations yield 134 name agreements, 21 follow-up cases and five unavailable pages. These remain separate from human-reviewed accuracy labels.
+- **Operational change review:** a tested refresh comparator flags source changes, denominator drift, support transitions and concentration changes without automatically approving publication.
 - **Executed R research:** 500 procurement-process bootstrap resamples per category-year; 300 per supported buyer case; independent-award comparison intervals, removal/capping sensitivity, an independent SQL/R HHI check, buyer-clustered median alternatives and calendar-quarter HHI sensitivity.
 - **Evidence review:** 31 normalized-name/registration cases across five Companies House records; 11 approvals, two rejections and 18 unresolved cases. Twenty large award records selected for notice review; 20 pages observed and 11 attribution holdbacks. This targeted review is not a population accuracy estimate or an independent audit.
 - **A meaningful finding:** attachment-list instructions and generic labels had been treated as suppliers. The upgraded rules exclude placeholders and invalid registration formats from supplier attribution while preserving eligible award totals. Read the generated business cases for the measured impact.
@@ -63,6 +65,8 @@ The process bootstrap keeps awards linked by the same OCID together. Broader buy
 | [R analysis](R/) | Process bootstrap, cross-checks and regression cases |
 | [SQL marts](sql/marts.sql) | Reviewable business logic |
 | [Random registry audit](RANDOM_AUDIT.md) | Sampling frame, evidence outcomes and uncertainty |
+| [Expanded validation plan](VALIDATION_PLAN.md) | Evidence scope, automation limits and second-review protocol |
+| [Usability review](USABILITY_REVIEW.md) | Observable tasks and an empty feedback template |
 | [Reviewer packet](REVIEWER_GUIDE.md) | Tasks and acceptance criteria for an actual outside reviewer |
 | [Verification](VERIFICATION.md) | Completed checks and remaining review |
 | [Runbook](RUNBOOK.md) | Rebuild, failure recovery, CI and gated deployment |

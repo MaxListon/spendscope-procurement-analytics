@@ -54,6 +54,18 @@ For the leading supported buyer identity by attributable value, {buyer["buyer_na
 
 Removing the largest award gives HHI {buyer["hhi_without_largest"]:,.0f}; buyer-specific 99th-percentile capping gives {buyer["hhi_capped"]:,.0f}. Registration evidence covers {buyer["registered_value_share"]:.1%} of this buyer identity's attributable value. Neither the ranking nor interval is a guarantee of operational supplier dependency. Review identity confidence and individual commitments before making a procurement decision.
 
+## Decision worksheet — should this buyer enter a supplier-risk review?
+
+Question: does {buyer["buyer_name"]}'s observed portfolio justify immediately changing supplier strategy? Recommendation: prioritize verification, not a supplier change. The process interval spans {buyer["hhi_low"]:,.0f}–{buyer["hhi_high"]:,.0f}; the largest-award sensitivity changes the point estimate from {buyer["hhi"]:,.0f} to {buyer["hhi_without_largest"]:,.0f}. That instability and {buyer["registered_value_share"]:.1%} registration-evidence coverage make an operational dependency claim premature.
+
+Analyst handoff: download buyer metrics and buyer sensitivity; locate the buyer in the Source explorer; inspect its largest commitments and original notices. Ask the stakeholder for supplier legal IDs, framework/call-off relationships, actual payments, service criticality and substitution lead times. Reconcile these to the observed publication identity before escalating any supplier-risk recommendation.
+
+Acceptance gate: do not recommend a supplier intervention until identity gaps and overlapping commitments are resolved, payment records reconcile to the intended period, and a procurement owner confirms service criticality. Record unresolved discrepancies. This is a proposed decision workflow, not a stakeholder-endorsed action or measured savings.
+
+## Expanded evidence collection — names are a screening signal
+
+The frozen hash ordering now extends to 200 identities: the original 40-case audit plus 160 additional automated registry observations. The latter yield {data["registry_screen"]["summary"]["outcomes"]["name_agrees"]} current/former-name agreements, {data["registry_screen"]["summary"]["outcomes"]["needs_review"]} cases requiring review and {data["registry_screen"]["summary"]["outcomes"]["not_observed"]} unavailable pages. These are not additional human-reviewed accuracy labels. A versioned follow-up queue preserves nonmatches and unavailable evidence; no attribution rule changes automatically.
+
 ## Dependence beyond one process
 
 The source provides {linkage["declarations"]} related-process declarations but only {linkage["resolved_edges"]} usable in-universe OCID links. No graph edges are invented from missing identifiers. R therefore also publishes buyer-clustered category medians and calendar-quarter buyer-HHI sensitivity, preserving dependence under broader alternative assumptions. These do not establish true framework/call-off relationships.

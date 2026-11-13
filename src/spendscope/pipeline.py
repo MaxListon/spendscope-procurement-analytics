@@ -20,6 +20,7 @@ from .normalize import normalize_awards, date
 from .review import apply_identity_review, attach_notice_review
 from .reporting import business_cases
 from .validation import registry_audit, related_process_clusters
+from .registry_screen import validate_screen
 
 
 def sha(path):
@@ -188,6 +189,17 @@ def build(root, offline=False):
             else ({"records": []}, {})
         )
         quality["registry_audit"] = audit_summary
+        screen_spec, screen_summary = {"records": []}, {}
+        if (review_root / "registry_screen.json").exists():
+            screen_spec = json.loads((review_root / "registry_screen.json").read_text())
+            screen_frame = (
+                con.sql(
+                    "SELECT s.supplier_key,max(s.supplier_name) supplier_name,count(*) award_links FROM awards a JOIN suppliers s USING(award_key) WHERE a.eligible AND a.supplier_count=1 AND NOT a.notice_review_block AND s.identity_basis IN ('registered','registry-audit-conflict') AND s.supplier_key LIKE 'GB-COH:%' GROUP BY s.supplier_key ORDER BY s.supplier_key"
+                )
+                .df()
+                .to_dict("records")
+            )
+            screen_summary = validate_screen(screen_frame, screen_spec, audit_spec)
         quality["process_linkage"] = linkage
         con.execute((root / "sql/marts.sql").read_text())
         checks = {
@@ -267,6 +279,24 @@ def build(root, offline=False):
         (stage / "reports/process_linkage.json").write_text(
             json.dumps(linkage, indent=2) + "\n"
         )
+        (stage / "reports/registry_screen.json").write_text(
+            json.dumps({"summary": screen_summary, "sample": screen_spec}, indent=2)
+            + "\n"
+        )
+        pd.DataFrame(
+            [
+                dict(
+                    supplier_key=r["supplier_key"],
+                    supplier_name=r["supplier_name"],
+                    registry_names=" | ".join(r["registry_names"]),
+                    outcome=r["outcome"],
+                    evidence_url=r["evidence_url"],
+                    observed_at=r["observed_at"],
+                )
+                for r in screen_spec["records"]
+                if r["outcome"] != "name_agrees"
+            ]
+        ).to_csv(stage / "reports/registry_review_queue.csv", index=False)
         quality["contracts"] = checks
         (stage / "reports/quality.json").write_text(
             json.dumps(quality, indent=2) + "\n"
@@ -305,6 +335,10 @@ def build(root, offline=False):
             comparison_thresholds=tables["comparison_thresholds"],
             notice_review=notice_review,
             registry_audit={"summary": audit_summary, "records": audit_spec["records"]},
+            registry_screen={
+                "summary": screen_summary,
+                "records": screen_spec["records"],
+            },
             process_linkage=linkage,
             statistics=r,
             source=json.loads((root / "data/sources.json").read_text()),
@@ -319,7 +353,13 @@ def build(root, offline=False):
         (stage / "reports/analysis.json").write_text(
             json.dumps(payload, indent=2, allow_nan=False) + "\n"
         )
-        for name in ("index.html", "style.css", "app.js", "research.css"):
+        for name in (
+            "index.html",
+            "style.css",
+            "app.js",
+            "research.css",
+            "walkthrough.html",
+        ):
             shutil.copy2(root / f"src/spendscope/web/{name}", stage / f"docs/{name}")
         shutil.copytree(stage / "reports", stage / "docs/reports")
         inputs = {

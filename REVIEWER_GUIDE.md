@@ -22,3 +22,7 @@ For each issue: artifact/record, expected behavior, observed behavior, source ev
 - A reviewer can explain coverage, registry evidence and each resampling unit.
 - Recommendations follow from observed results without claiming payments, savings, causal effects or misconduct.
 - Any unresolved material finding is documented before the project is described as independently reviewed.
+
+## Ready-to-run extensions
+
+See [expanded validation protocol](VALIDATION_PLAN.md) for the 200-identity selection and the distinction between observed name screening and independent labels. Use [usability tasks](USABILITY_REVIEW.md) to collect actual task outcomes. The public feedback template is empty; fill it only from genuine observations and use anonymized participant codes.
