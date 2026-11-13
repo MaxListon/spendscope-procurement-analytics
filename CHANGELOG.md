@@ -1,3 +1,11 @@
+# v0.5.0 — Supplier investigation workspace
+
+- Add exact-ID buyer profiles with supplier shares, full eligible award evidence, coverage gates, deterministic largest-award sensitivity and R intervals where executed.
+- Add an explainable evidence-review queue for every buyer identity with attributable awards, including limited-coverage cases. Keep zero-attribution identities out of concentration profiles while preserving headline totals.
+- Add local browser review history, explicit state transitions, transactional stale-write protection, archive export/restore and strict conflict validation. No shared backend, authenticated audit trail or prepopulated reviewer decisions are claimed.
+- Add unfilled first-review worksheets for the 160 automated registry cases and a fixed 40-case second-review subset; validate genuine submissions before scoring categorical agreement. Independent review remains outstanding.
+- Expand the generated decision brief to cover alternatives, evidence, proposed owner handoff and completion criteria without asserting operational impact or savings.
+
 # v0.4.0 — Decision support and expanded registry screening
 
 - Extend the original frozen sample to 200 identities, preserving the original 40-case audit. Record 160 additional automated official registry observations with extraction checks, timestamps, response fingerprints and a follow-up queue. Do not claim additional human-reviewed labels or change attribution automatically.

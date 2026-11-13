@@ -22,7 +22,13 @@ class Links(HTMLParser):
 
 
 def test_local_dashboard_assets_exist():
-    for page in ("index.html", "research.html", "case-studies.html", "walkthrough.html"):
+    for page in (
+        "index.html",
+        "research.html",
+        "case-studies.html",
+        "walkthrough.html",
+        "workspace.html",
+    ):
         path = ROOT / "docs" / page
         parser = Links()
         parser.feed(path.read_text())

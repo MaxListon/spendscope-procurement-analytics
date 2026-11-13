@@ -40,6 +40,16 @@ Analyst handoff: download buyer metrics and buyer sensitivity. Match buyer_key b
 
 Acceptance gate: do not recommend a supplier intervention until identity gaps and overlapping commitments are resolved, payment records reconcile to the intended period, and a procurement owner confirms service criticality. Record unresolved discrepancies. This is a proposed decision workflow, not a stakeholder-endorsed action or measured savings.
 
+## Investigation brief — evidence, options and handoff
+
+The workspace links this case to publication ID b49f4c311ff916ace705f91d, not every record named Home Office. Its evidence-review priority is 35/100, assigned by explicit coverage, registration, commitment-size and concentration-sensitivity rules. This is not a supplier-risk score, the queue's highest-priority case, or a validated prediction.
+
+Options considered: immediately change the supplier strategy; dismiss the finding because the buyer passes the coverage gate; or investigate the evidence gaps first. The supported choice is the third. Coverage measures eligible commitments represented in attribution; it does not verify legal identity or actual service dependency. The R interval and largest-award sensitivity show why a single point estimate is not sufficient evidence for intervention.
+
+Proposed handoff: an analyst opens the exact buyer profile, inspects supplier shares and original notices, and records unresolved identity/payment/framework questions as awaiting evidence. A procurement owner supplies legal identifiers, payments and service-criticality context. A reviewer records the conclusion only after inspecting the evidence; closure requires an evidence URL and no unresolved questions in the form. Reopening appends another entry and preserves the prior decision. No review entry, stakeholder endorsement or implemented supplier change is prepopulated or claimed.
+
+Completion criteria: reconcile the intended legal buyer and supplier identities; resolve material overlaps between framework ceilings and call-offs; define the actual payment period; and obtain a procurement owner's assessment of critical services and substitute availability. If evidence remains unavailable, retain the case awaiting evidence rather than reporting savings or confirmed operational risk. The demonstrated outcome is a reproducible investigation and handoff, not measured organizational impact.
+
 ## Expanded evidence collection — names are a screening signal
 
 The frozen hash ordering now extends to 200 identities: the original 40-case audit plus 160 additional automated registry observations. The latter yield 134 current/former-name agreements, 21 cases requiring review and 5 unavailable pages. These are not additional human-reviewed accuracy labels. A versioned follow-up queue preserves nonmatches and unavailable evidence; no attribution rule changes automatically.

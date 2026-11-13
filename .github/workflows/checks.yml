@@ -24,6 +24,8 @@ jobs:
       - run: pytest -q
       - run: python scripts/verify.py
       - run: node --check src/spendscope/web/app.js
+      - run: node --check src/spendscope/web/workspace.js
+      - run: node --test scripts/test_review_model.cjs
   real-data:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -50,9 +52,12 @@ jobs:
           pip install dist/spendscope-*.whl
       - run: Rscript R/test_concentration.R
       - name: Preserve expected analysis
-        run: cp reports/analysis.json "$RUNNER_TEMP/expected-analysis.json"
+        run: |
+          cp reports/analysis.json "$RUNNER_TEMP/expected-analysis.json"
+          cp docs/workspace/index.json "$RUNNER_TEMP/expected-workspace.json"
       - run: python -m spendscope.pipeline --root .
       - run: python scripts/compare_results.py "$RUNNER_TEMP/expected-analysis.json" reports/analysis.json
+      - run: python scripts/compare_results.py "$RUNNER_TEMP/expected-workspace.json" docs/workspace/index.json
       - name: Record source-refresh review
         run: python scripts/review_refresh.py "$RUNNER_TEMP/expected-analysis.json" reports/analysis.json --output "$RUNNER_TEMP/refresh-review.json"
       - uses: actions/upload-artifact@v4

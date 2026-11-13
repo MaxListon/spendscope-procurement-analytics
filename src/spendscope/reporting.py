@@ -62,6 +62,16 @@ Analyst handoff: download buyer metrics and buyer sensitivity. Match buyer_key {
 
 Acceptance gate: do not recommend a supplier intervention until identity gaps and overlapping commitments are resolved, payment records reconcile to the intended period, and a procurement owner confirms service criticality. Record unresolved discrepancies. This is a proposed decision workflow, not a stakeholder-endorsed action or measured savings.
 
+## Investigation brief — evidence, options and handoff
+
+The workspace links this case to publication ID {buyer["buyer_key"]}, not every record named {buyer["buyer_name"]}. Its evidence-review priority is {data["investigation_workspace"]["example"]["priority_points"]}/100, assigned by explicit coverage, registration, commitment-size and concentration-sensitivity rules. This is not a supplier-risk score, the queue's highest-priority case, or a validated prediction.
+
+Options considered: immediately change the supplier strategy; dismiss the finding because the buyer passes the coverage gate; or investigate the evidence gaps first. The supported choice is the third. Coverage measures eligible commitments represented in attribution; it does not verify legal identity or actual service dependency. The R interval and largest-award sensitivity show why a single point estimate is not sufficient evidence for intervention.
+
+Proposed handoff: an analyst opens the exact buyer profile, inspects supplier shares and original notices, and records unresolved identity/payment/framework questions as awaiting evidence. A procurement owner supplies legal identifiers, payments and service-criticality context. A reviewer records the conclusion only after inspecting the evidence; closure requires an evidence URL and no unresolved questions in the form. Reopening appends another entry and preserves the prior decision. No review entry, stakeholder endorsement or implemented supplier change is prepopulated or claimed.
+
+Completion criteria: reconcile the intended legal buyer and supplier identities; resolve material overlaps between framework ceilings and call-offs; define the actual payment period; and obtain a procurement owner's assessment of critical services and substitute availability. If evidence remains unavailable, retain the case awaiting evidence rather than reporting savings or confirmed operational risk. The demonstrated outcome is a reproducible investigation and handoff, not measured organizational impact.
+
 ## Expanded evidence collection — names are a screening signal
 
 The frozen hash ordering now extends to 200 identities: the original 40-case audit plus 160 additional automated registry observations. The latter yield {data["registry_screen"]["summary"]["outcomes"]["name_agrees"]} current/former-name agreements, {data["registry_screen"]["summary"]["outcomes"]["needs_review"]} cases requiring review and {data["registry_screen"]["summary"]["outcomes"]["not_observed"]} unavailable pages. These are not additional human-reviewed accuracy labels. A versioned follow-up queue preserves nonmatches and unavailable evidence; no attribution rule changes automatically.
@@ -93,6 +103,6 @@ Evidence: reports/quality.json, buyer_evidence.csv, buyer_sensitivity.csv, compa
     html = (
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpendScope | Business case studies</title><link rel="stylesheet" href="research.css"></head><body><main><a href="index.html">← Dashboard</a><p class="eyebrow">BUSINESS CASE STUDIES / EXECUTED RESULTS</p>'
         + "".join(blocks)
-        + '<p><a href="reports/decision_case_awards.csv">Case evidence: 20 largest attributable commitments ↓</a></p><p><a href="research.html">R research note ↗</a> · <a href="reports/notice_checks.json">Evidence register ↓</a></p></main></body></html>'
+        + f'<p><a href="workspace.html?buyer={buyer["buyer_key"]}">Open this exact buyer investigation →</a></p><p><a href="reports/decision_case_awards.csv">Case evidence: 20 largest attributable commitments ↓</a></p><p><a href="research.html">R research note ↗</a> · <a href="reports/notice_checks.json">Evidence register ↓</a></p></main></body></html>'
     )
     return md, html

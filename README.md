@@ -2,7 +2,7 @@
 
 **Public procurement analytics with SQL, Python and R: follow the evidence behind supplier concentration.**
 
-[Three-minute walkthrough](https://maxliston.github.io/spendscope-procurement-analytics/walkthrough.html) · [Live dashboard](https://maxliston.github.io/spendscope-procurement-analytics/) · [R research note](https://maxliston.github.io/spendscope-procurement-analytics/research.html) · [Business case studies](EXECUTIVE_MEMO.md)
+[Investigation workspace](https://maxliston.github.io/spendscope-procurement-analytics/workspace.html) · [Three-minute walkthrough](https://maxliston.github.io/spendscope-procurement-analytics/walkthrough.html) · [Live dashboard](https://maxliston.github.io/spendscope-procurement-analytics/) · [R research note](https://maxliston.github.io/spendscope-procurement-analytics/research.html) · [Business case studies](EXECUTIVE_MEMO.md)
 
 [![Checks](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml/badge.svg)](https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml)
 
@@ -21,6 +21,7 @@ A procurement manager wants to know where award commitments are concentrated. Ra
 - **Executed R research:** 500 procurement-process bootstrap resamples per category-year; 300 per supported buyer case; independent-award comparison intervals, removal/capping sensitivity, an independent SQL/R HHI check, buyer-clustered median alternatives and calendar-quarter HHI sensitivity.
 - **Evidence review:** 31 normalized-name/registration cases across five Companies House records; 11 approvals, two rejections and 18 unresolved cases. Twenty large award records selected for notice review; 20 pages observed and 11 attribution holdbacks. This targeted review is not a population accuracy estimate or an independent audit.
 - **A meaningful finding:** attachment-list instructions and generic labels had been treated as suppliers. The upgraded rules exclude placeholders and invalid registration formats from supplier attribution while preserving eligible award totals. Read the generated business cases for the measured impact.
+- **A practical investigation workspace:** 12,751 exact buyer profiles, full eligible award records and supplier shares, explicit review-priority rules, largest-award sensitivity, local decision history and validated archive restore. No shared case-management backend or completed independent review is claimed.
 - **A usable dashboard:** buyer/supplier search, registration-evidence filter, downloadable results, original notice links, evidence register, R research note and clear caveats.
 
 ## Run from a clean checkout
@@ -65,6 +66,7 @@ The process bootstrap keeps awards linked by the same OCID together. Broader buy
 | [R analysis](R/) | Process bootstrap, cross-checks and regression cases |
 | [SQL marts](sql/marts.sql) | Reviewable business logic |
 | [Random registry audit](RANDOM_AUDIT.md) | Sampling frame, evidence outcomes and uncertainty |
+| [Investigation guide](INVESTIGATION_GUIDE.md) | Exact buyer profiles, priority rules, local review workflow and independent-label handoff |
 | [Expanded validation plan](VALIDATION_PLAN.md) | Evidence scope, automation limits and second-review protocol |
 | [Usability review](USABILITY_REVIEW.md) | Observable tasks and an empty feedback template |
 | [Reviewer packet](REVIEWER_GUIDE.md) | Tasks and acceptance criteria for an actual outside reviewer |

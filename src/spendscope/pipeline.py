@@ -21,6 +21,7 @@ from .review import apply_identity_review, attach_notice_review
 from .reporting import business_cases
 from .validation import registry_audit, related_process_clusters
 from .registry_screen import validate_screen
+from .investigations import build_workspace
 
 
 def sha(path):
@@ -331,6 +332,14 @@ def build(root, offline=False):
                 (root / "sql/decision_case.sql").read_text(),
                 [r["buyers"][0]["buyer_key"]],
             ).df().to_csv(stage / "reports/decision_case_awards.csv", index=False)
+        with duckdb.connect(str(stage / "warehouse.duckdb")) as workspace_con:
+            workspace = build_workspace(
+                workspace_con,
+                stage,
+                root,
+                json.loads((root / "data/sources.json").read_text()),
+                r,
+            )
         payload = dict(
             annual=tables["annual"],
             categories=tables["categories"],
@@ -346,6 +355,18 @@ def build(root, offline=False):
                 "summary": screen_summary,
                 "records": screen_spec["records"],
             },
+            investigation_workspace=dict(
+                dataset_id=workspace["dataset_id"],
+                profile_count=workspace["profile_count"],
+                excluded_zero_attribution_buyers=workspace[
+                    "excluded_zero_attribution_buyers"
+                ],
+                example=next(
+                    x
+                    for x in workspace["buyers"]
+                    if x["buyer_key"] == r["buyers"][0]["buyer_key"]
+                ),
+            ),
             process_linkage=linkage,
             statistics=r,
             source=json.loads((root / "data/sources.json").read_text()),
@@ -366,6 +387,10 @@ def build(root, offline=False):
             "app.js",
             "research.css",
             "walkthrough.html",
+            "workspace.html",
+            "workspace.css",
+            "workspace.js",
+            "review-model.js",
         ):
             shutil.copy2(root / f"src/spendscope/web/{name}", stage / f"docs/{name}")
         shutil.copytree(stage / "reports", stage / "docs/reports")
@@ -376,7 +401,7 @@ def build(root, offline=False):
             if f.is_file()
             and "__pycache__" not in str(f)
             and f.suffix
-            in {".py", ".html", ".css", ".js", ".sql", ".R", ".csv", ".json"}
+            in {".py", ".html", ".css", ".js", ".cjs", ".sql", ".R", ".csv", ".json"}
         }
         for f in ("data/sources.json", "pyproject.toml", "requirements-lock.txt"):
             inputs[f] = sha(root / f)

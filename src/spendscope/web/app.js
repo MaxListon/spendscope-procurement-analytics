@@ -65,7 +65,13 @@ function buyers() {
       .map(
         (r) =>
           "<tr>" +
-          td(r.buyer_name) +
+          '<td><a href="workspace.html?buyer=' +
+          encodeURIComponent(r.buyer_key) +
+          '">' +
+          esc(r.buyer_name) +
+          '</a><small class="buyer-id">' +
+          esc(r.buyer_key) +
+          "</small></td>" +
           td(money(r.attributed_value), "num") +
           td(number(r.attributed_awards), "num") +
           td(number(r.suppliers), "num") +
@@ -173,6 +179,7 @@ $("award-search").addEventListener("input", () => data && awards());
 $("export-buyers").addEventListener("click", () => {
   if (!data) return;
   const keys = [
+    "buyer_key",
     "buyer_name",
     "attributed_value",
     "attributed_awards",
@@ -306,16 +313,35 @@ fetch("data.json")
 function validation() {
   const screen = data.registry_screen.summary;
   $("expanded-screen-summary").textContent =
-    "The original 40-case audit is preserved. Another " + screen.automated_cases +
-    " identities extend the same frozen sample to " + screen.expanded_sample_size +
-    ": " + screen.outcomes.name_agrees + " have matching current/former legal names, " +
-    screen.outcomes.needs_review + " need review, and " + screen.outcomes.not_observed +
+    "The original 40-case audit is preserved. Another " +
+    screen.automated_cases +
+    " identities extend the same frozen sample to " +
+    screen.expanded_sample_size +
+    ": " +
+    screen.outcomes.name_agrees +
+    " have matching current/former legal names, " +
+    screen.outcomes.needs_review +
+    " need review, and " +
+    screen.outcomes.not_observed +
     " pages were unavailable. Automated name consistency does not verify the source supplier assignment. No automatic attribution changes.";
-  table("expanded-screen-table", ["Published supplier", "Registry names", "Screen outcome", "Evidence"],
-    data.registry_screen.records.filter(r => r.outcome !== "name_agrees").map(r =>
-      "<tr>" + td(r.supplier_name) + td(r.registry_names.join(" / ") || "Not observed") + td(r.outcome) +
-      '<td><a href="' + esc(r.evidence_url) + '" target="_blank" rel="noopener noreferrer">' + esc(r.supplier_key) + ' ↗</a></td></tr>'
-    ));
+  table(
+    "expanded-screen-table",
+    ["Published supplier", "Registry names", "Screen outcome", "Evidence"],
+    data.registry_screen.records
+      .filter((r) => r.outcome !== "name_agrees")
+      .map(
+        (r) =>
+          "<tr>" +
+          td(r.supplier_name) +
+          td(r.registry_names.join(" / ") || "Not observed") +
+          td(r.outcome) +
+          '<td><a href="' +
+          esc(r.evidence_url) +
+          '" target="_blank" rel="noopener noreferrer">' +
+          esc(r.supplier_key) +
+          " ↗</a></td></tr>",
+      ),
+  );
   const audit = data.registry_audit.summary;
   $("random-audit-summary").innerHTML =
     "<p><strong>" +

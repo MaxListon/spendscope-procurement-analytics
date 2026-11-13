@@ -491,3 +491,5 @@ footer strong {
 body[data-view]:not([data-view="overview"]) .hero {
   display: none;
 }
+
+.buyer-id { display:block; font:10px/1.7 ui-monospace,monospace; color:var(--muted); overflow-wrap:anywhere; }

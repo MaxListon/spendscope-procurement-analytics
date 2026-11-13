@@ -1,14 +1,173 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A three-minute evidence-first walkthrough of SpendScope's SQL, Python and R procurement analysis."><title>SpendScope | Start here</title><link rel="stylesheet" href="research.css"><style>.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.step{background:white;border:1px solid #c9d7d2;padding:24px;border-radius:12px}.step h2{margin-top:0;font-size:23px}.tag{font-size:12px;letter-spacing:1.5px;color:#467365;text-transform:uppercase}.flow{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none}.flow li{background:#17343d;color:#fff;border-radius:8px;padding:14px;flex:1;min-width:130px}.flow small{display:block;color:#d1e8df}a:focus-visible,summary:focus-visible{outline:3px solid #b44e26;outline-offset:4px}@media(max-width:750px){.steps{grid-template-columns:1fr}}</style></head>
-<body><main><a href="index.html">← Open dashboard</a><p class="eyebrow">SPENDSCOPE / THREE-MINUTE WALKTHROUGH</p><h1>A ranking is the start of a question.</h1><p>Explore real public procurement records, then inspect whether the evidence supports the decision. SQL keeps award values at the correct grain. Python makes identity decisions reproducible. R tests how stable the findings are.</p>
-<div class="steps"><section class="step"><p class="tag">01 / Question</p><h2>Where is exposure concentrated?</h2><p>Open Buyer exposure and search <strong>Home Office</strong>. Use the row with <strong>311 awards</strong> (about £2.80bn attributable value): several publication identities share this name. Read attributable-value coverage alongside HHI. A publication identity is not necessarily a fully resolved organization.</p><a href="index.html#buyers">Explore buyers →</a></section>
-<section class="step"><p class="tag">02 / Challenge</p><h2>Would the conclusion survive?</h2><p>Read the business case and R intervals. Compare whole-process resampling, the broader calendar-quarter alternative and removal of the largest award. Instability changes the next action.</p><a href="case-studies.html">Read the decision worksheet →</a></section>
-<section class="step"><p class="tag">03 / Evidence</p><h2>What still needs checking?</h2><p>Inspect the original 40-case registry audit separately from 160 additional automated name screens. Download the follow-up queue and examine original evidence before treating a name as verified.</p><a href="index.html#validation">Inspect validation →</a></section></div>
-<h2>How the system works</h2><ol class="flow" aria-label="Data pipeline"><li>Public archives<small>Pinned originals + SHA-256</small></li><li>Python normalization<small>Award grain + identity evidence</small></li><li>DuckDB / SQL<small>Conservation + coverage gates</small></li><li>R analysis<small>Dependence + sensitivity</small></li><li>Verified publication<small>Tests → exact commit → Pages</small></li></ol>
-<p><a href="reports/decision_case_awards.csv">Download the case’s 20 largest attributable commitments →</a> · Exact publication identity; original notice links; not payments.</p>
-<h2>The decision this supports</h2><p><strong>Prioritize investigation before changing suppliers.</strong> The Home Office case demonstrates why a concentration point estimate alone is insufficient. A procurement owner still needs legal identities, call-off relationships, actual payments, service criticality and substitution lead times. No stakeholder endorsement or realized savings is claimed.</p>
-<h2>Inspect the engineering</h2><p><a href="https://github.com/MaxListon/spendscope-procurement-analytics">Source repository</a> · <a href="https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml">Latest build checks</a> · <a href="reports/build_manifest.json">Artifact fingerprints</a> · <a href="research.html">Executed R analysis</a></p>
-<h2>Data freshness, stated precisely</h2><p>This is historical analysis of selected 2022–2024 snapshots, retrieved <strong>12 November 2026</strong>. It is not a live feed. Automated registry screening has its own observation timestamps in the evidence download. A successful rebuild verifies those pinned sources; it does not mean newer procurement data was acquired.</p>
-<details><summary>What would independent review add?</summary><p>A second reviewer should label a blinded subset, inspect ambiguous identity decisions, reproduce an HHI calculation and complete the dashboard tasks on a narrow screen. The repository includes a reviewer packet, usability task sheet and empty feedback template. No outside review or user testing results have been fabricated.</p></details>
-<p><a href="index.html">Explore the dashboard →</a></p></main></body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="A three-minute evidence-first walkthrough of SpendScope's SQL, Python and R procurement analysis."
+    />
+    <title>SpendScope | Start here</title>
+    <link rel="stylesheet" href="research.css" />
+    <style>
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .step {
+        background: white;
+        border: 1px solid #c9d7d2;
+        padding: 24px;
+        border-radius: 12px;
+      }
+      .step h2 {
+        margin-top: 0;
+        font-size: 23px;
+      }
+      .tag {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        color: #467365;
+        text-transform: uppercase;
+      }
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0;
+        list-style: none;
+      }
+      .flow li {
+        background: #17343d;
+        color: #fff;
+        border-radius: 8px;
+        padding: 14px;
+        flex: 1;
+        min-width: 130px;
+      }
+      .flow small {
+        display: block;
+        color: #d1e8df;
+      }
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid #b44e26;
+        outline-offset: 4px;
+      }
+      @media (max-width: 750px) {
+        .steps {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="index.html">← Open dashboard</a>
+      <p class="eyebrow">SPENDSCOPE / THREE-MINUTE WALKTHROUGH</p>
+      <h1>A ranking is the start of a question.</h1>
+      <p>
+        Explore real public procurement records, then inspect whether the
+        evidence supports the decision. SQL keeps award values at the correct
+        grain. Python makes identity decisions reproducible. R tests how stable
+        the findings are.
+      </p>
+      <div class="steps">
+        <section class="step">
+          <p class="tag">01 / Question</p>
+          <h2>Where is exposure concentrated?</h2>
+          <p>
+            Open Buyer exposure and search <strong>Home Office</strong>. Use the
+            row with <strong>311 awards</strong> (about £2.80bn attributable
+            value): several publication identities share this name. Read
+            attributable-value coverage alongside HHI. A publication identity is
+            not necessarily a fully resolved organization.
+          </p>
+          <a href="index.html#buyers">Explore buyers →</a>
+        </section>
+        <section class="step">
+          <p class="tag">02 / Challenge</p>
+          <h2>Would the conclusion survive?</h2>
+          <p>
+            Read the business case and R intervals. Compare whole-process
+            resampling, the broader calendar-quarter alternative and removal of
+            the largest award. Instability changes the next action.
+          </p>
+          <a href="case-studies.html">Read the decision worksheet →</a>
+        </section>
+        <section class="step">
+          <p class="tag">03 / Evidence</p>
+          <h2>What still needs checking?</h2>
+          <p>
+            Inspect the original 40-case registry audit separately from 160
+            additional automated name screens. Download the follow-up queue and
+            examine original evidence before treating a name as verified.
+          </p>
+          <a href="index.html#validation">Inspect validation →</a>
+        </section>
+      </div>
+      <h2>How the system works</h2>
+      <ol class="flow" aria-label="Data pipeline">
+        <li>Public archives<small>Pinned originals + SHA-256</small></li>
+        <li>
+          Python normalization<small>Award grain + identity evidence</small>
+        </li>
+        <li>DuckDB / SQL<small>Conservation + coverage gates</small></li>
+        <li>R analysis<small>Dependence + sensitivity</small></li>
+        <li>Verified publication<small>Tests → exact commit → Pages</small></li>
+      </ol>
+      <p>
+        <a href="reports/decision_case_awards.csv"
+          >Download the case’s 20 largest attributable commitments →</a
+        >
+        · Exact publication identity; original notice links; not payments.
+      </p>
+      <p>
+        <a href="workspace.html">Open the investigation queue →</a> · Exact
+        buyer profiles, transparent priority flags and local review history.
+      </p>
+      <h2>The decision this supports</h2>
+      <p>
+        <strong>Prioritize investigation before changing suppliers.</strong> The
+        Home Office case demonstrates why a concentration point estimate alone
+        is insufficient. A procurement owner still needs legal identities,
+        call-off relationships, actual payments, service criticality and
+        substitution lead times. No stakeholder endorsement or realized savings
+        is claimed.
+      </p>
+      <h2>Inspect the engineering</h2>
+      <p>
+        <a href="https://github.com/MaxListon/spendscope-procurement-analytics"
+          >Source repository</a
+        >
+        ·
+        <a
+          href="https://github.com/MaxListon/spendscope-procurement-analytics/actions/workflows/checks.yml"
+          >Latest build checks</a
+        >
+        · <a href="reports/build_manifest.json">Artifact fingerprints</a> ·
+        <a href="research.html">Executed R analysis</a>
+      </p>
+      <h2>Data freshness, stated precisely</h2>
+      <p>
+        This is historical analysis of selected 2022–2024 snapshots, retrieved
+        <strong>12 November 2026</strong>. It is not a live feed. Automated
+        registry screening has its own observation timestamps in the evidence
+        download. A successful rebuild verifies those pinned sources; it does
+        not mean newer procurement data was acquired.
+      </p>
+      <details>
+        <summary>What would independent review add?</summary>
+        <p>
+          A second reviewer should label a blinded subset, inspect ambiguous
+          identity decisions, reproduce an HHI calculation and complete the
+          dashboard tasks on a narrow screen. The repository includes a reviewer
+          packet, usability task sheet and empty feedback template. No outside
+          review or user testing results have been fabricated.
+        </p>
+      </details>
+      <p><a href="index.html">Explore the dashboard →</a></p>
+    </main>
+  </body>
+</html>

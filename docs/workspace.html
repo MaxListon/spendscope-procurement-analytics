@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Investigate exact buyer identities, supplier concentration, evidence gaps and review decisions."
+    />
+    <title>SpendScope | Investigation workspace</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="workspace.css" />
+  </head>
+  <body>
+    <a class="skip" href="#workspace-main">Skip to investigation</a>
+    <header>
+      <a class="brand" href="index.html"
+        ><span class="mark">S</span> SpendScope</a
+      ><a href="walkthrough.html">Project walkthrough ↗</a>
+    </header>
+    <main id="workspace-main">
+      <section class="workspace-hero">
+        <p class="eyebrow">SUPPLIER INVESTIGATION WORKSPACE</p>
+        <h1>Find the gap.<br /><em>Follow the evidence.</em></h1>
+        <p>
+          Prioritize a question, inspect the exact publication identity, and
+          record what the evidence supports.
+        </p>
+        <p id="load-status" role="status">Loading investigation index…</p>
+      </section>
+      <section id="queue-view">
+        <div class="section-title">
+          <h2>Investigation queue</h2>
+          <a href="case-studies.html">Read the complete decision brief →</a>
+        </div>
+        <aside class="panel note">
+          Priority points allocate follow-up effort. They are transparent
+          heuristics, not supplier-risk, fraud, performance or savings scores.
+          Limited-coverage cases stay visible because missing evidence is itself
+          a reason to investigate.
+        </aside>
+        <div class="filters">
+          <label
+            >Find buyer or exact ID<input
+              id="queue-search"
+              type="search"
+              placeholder="Name or publication ID" /></label
+          ><label
+            >Minimum eligible value<select id="queue-materiality">
+              <option value="10000000">£10 million</option>
+              <option value="1000000">£1 million</option>
+              <option value="0">All values</option>
+            </select></label
+          ><label
+            >Comparison support<select id="queue-support">
+              <option value="all">All profiles</option>
+              <option value="supported">Supported only</option>
+              <option value="limited">Limited only</option>
+            </select></label
+          ><label
+            >Review status<select id="queue-status">
+              <option value="all">All statuses</option>
+              <option value="open">Open</option>
+              <option value="in_review">In review</option>
+              <option value="awaiting_evidence">Awaiting evidence</option>
+              <option value="closed">Closed with decision</option>
+            </select></label
+          >
+        </div>
+        <div class="section-title">
+          <p id="queue-count"></p>
+          <button id="export-queue" type="button">
+            Download filtered queue ↓
+          </button>
+        </div>
+        <div id="queue-table" class="table-wrap"></div>
+        <details class="panel">
+          <summary>How are priority points assigned?</summary>
+          <div id="queue-rules"></div>
+          <p>
+            Points are additive, maximum 100. Ties use largest eligible award,
+            then exact buyer key. Thresholds are operational choices, not
+            validated predictors. R intervals are shown only for the 30
+            researched buyer identities.
+          </p>
+          <p id="profile-scope"></p>
+        </details>
+      </section>
+      <section id="buyer-view" hidden>
+        <a href="workspace.html">← Investigation queue</a>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">EXACT PUBLICATION IDENTITY</p>
+            <h2 id="buyer-name"></h2>
+            <p id="buyer-key" class="mono"></p>
+          </div>
+          <button id="export-profile" type="button">
+            Download this case ↓
+          </button>
+        </div>
+        <div id="buyer-kpis" class="kpis"></div>
+        <div class="two">
+          <article class="panel">
+            <h3>Why this case is flagged</h3>
+            <div id="buyer-flags"></div>
+          </article>
+          <article class="panel">
+            <h3>Does concentration survive a different assumption?</h3>
+            <div id="buyer-sensitivity"></div>
+            <a href="research.html">Read statistical assumptions →</a>
+          </article>
+        </div>
+        <article class="panel">
+          <h3>Supplier shares</h3>
+          <p>
+            Denominator: attributable value only. A published registration is
+            not necessarily independently verified; provisional name-only
+            identities remain visible.
+          </p>
+          <div id="supplier-shares" class="table-wrap"></div>
+          <button id="more-suppliers" type="button" hidden>
+            Show more suppliers
+          </button>
+        </article>
+        <article class="panel">
+          <div class="section-title">
+            <h3>Original eligible award records</h3>
+            <button id="export-awards" type="button">
+              Download all case awards ↓
+            </button>
+          </div>
+          <p>
+            One row per award. Unattributed records stay in eligible totals;
+            supplier shares use a smaller denominator. These are commitments,
+            not payments.
+          </p>
+          <label
+            >Find an award<input
+              id="profile-award-search"
+              type="search"
+              placeholder="Title, award ID or supplier"
+          /></label>
+          <p id="profile-award-count"></p>
+          <div id="profile-awards" class="table-wrap"></div>
+          <button id="more-awards" type="button" hidden>
+            Show more awards
+          </button>
+        </article>
+        <article class="panel review-panel">
+          <p class="eyebrow">REVIEW WORKFLOW / STORED ON THIS DEVICE</p>
+          <h3>Record the decision, not just the score.</h3>
+          <p id="review-state"></p>
+          <p>
+            Notes stay in this browser. They are not sent to the public site,
+            synchronized, or independently authenticated. Export a backup before
+            changing devices. Do not enter confidential or personal information.
+          </p>
+          <form id="review-form">
+            <div class="two">
+              <label
+                >Reviewer initials<input
+                  id="reviewer"
+                  maxlength="80"
+                  required
+                  autocomplete="off" /></label
+              ><label
+                >Next status<select id="review-next" required></select
+              ></label>
+            </div>
+            <label
+              >Evidence URL<input
+                id="review-evidence"
+                type="url"
+                maxlength="2048"
+                placeholder="https://…" /></label
+            ><label
+              >Decision and reasoning<textarea
+                id="review-note"
+                minlength="20"
+                maxlength="4000"
+                rows="4"
+                required
+                placeholder="What did you inspect, what can you conclude, and what remains unsupported?"
+              ></textarea></label
+            ><label
+              >Unresolved questions<textarea
+                id="review-questions"
+                maxlength="4000"
+                rows="3"
+                placeholder="Leave unresolved cases awaiting evidence; do not close them prematurely."
+              ></textarea></label
+            ><button type="submit" id="save-review">Append review entry</button>
+          </form>
+          <p id="review-message" role="status"></p>
+          <div id="review-history"></div>
+        </article>
+      </section>
+      <section class="panel">
+        <p class="eyebrow">INDEPENDENT VALIDATION / READY FOR REAL REVIEWERS</p>
+        <h3>Screening results need a separate human check.</h3>
+        <p>
+          The 160 additional registry cases remain automated name screens. These
+          unfilled worksheets do not count as completed independent validation.
+          Keep both reviewers’ original labels and record adjudication
+          separately.
+        </p>
+        <div class="download-links">
+          <a href="reports/independent_registry_review.csv"
+            >160-case first-review worksheet ↓</a
+          ><a href="reports/second_registry_review.csv"
+            >40-case second-review subset ↓</a
+          ><a
+            href="https://github.com/MaxListon/spendscope-procurement-analytics/blob/main/INVESTIGATION_GUIDE.md"
+            >Review and scoring instructions ↗</a
+          >
+        </div>
+      </section>
+      <section class="panel archive">
+        <h3>Your review archive</h3>
+        <p id="archive-status">Review storage is opening…</p>
+        <div class="download-links">
+          <button id="export-reviews" type="button">
+            Export all review history ↓</button
+          ><label class="file-label"
+            >Restore exported history<input
+              id="import-reviews"
+              type="file"
+              accept="application/json,.json"
+          /></label>
+        </div>
+        <p id="archive-message" role="status"></p>
+        <p>
+          Import validates complete decision chains and rejects altered IDs or
+          competing histories. The archive is user-entered evidence, not a
+          tamper-proof audit log. Notes from older data/rule versions are
+          retained separately.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <strong>SpendScope</strong
+      ><span>SQL · Python · R / Research portfolio by MaxListon</span
+      ><a href="index.html#validation">Validation scope ↗</a>
+    </footer>
+    <script src="review-model.js"></script>
+    <script src="workspace.js"></script>
+  </body>
+</html>

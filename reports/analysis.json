@@ -351546,6 +351546,31 @@
       }
     ]
   },
+  "investigation_workspace": {
+    "dataset_id": "48a991e1fc26913a76409b914e23e023e112b5c5c6edd96c7cc2f764ccbe5d17",
+    "profile_count": 12751,
+    "excluded_zero_attribution_buyers": 1556,
+    "example": {
+      "buyer_key": "b49f4c311ff916ace705f91d",
+      "buyer_name": "Home Office",
+      "total_value": 2797400897.229999,
+      "total_awards": 311,
+      "attributed_awards": 311.0,
+      "attributed_value": 2797400897.2300005,
+      "value_coverage": 1.0,
+      "registered_value_share": 0.0,
+      "largest_eligible_award": 271000000.0,
+      "top1_share": 0.2906269175809,
+      "hhi": 1113.2946478877852,
+      "hhi_without_largest": 789.6317239486051,
+      "supported": true,
+      "priority_points": 35,
+      "flags": [
+        "identity_gap",
+        "large_commitment"
+      ]
+    }
+  },
   "process_linkage": {
     "processes_with_declarations": 249,
     "declarations": 249,

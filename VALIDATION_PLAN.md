@@ -21,3 +21,7 @@ Name-only identities require a separate frame and sampling design. There is no r
 `python scripts/collect_registry_screen.py --root . --output /tmp/registry-screen-candidate.json` makes explicit live requests using three workers and verifies the profile number. It writes a candidate only; inspect it before replacing the versioned observations. CI never re-queries registry pages, so builds remain reproducible and do not silently rewrite historical labels.
 
 A changed source snapshot invalidates the frozen frame unless deliberately revalidated. The pipeline refuses a frame mismatch. Keep the old observations and audit result for comparison rather than silently relabeling the original sample.
+
+## Executable reviewer handoff
+
+The investigation build exports 160 blank first-review worksheets and a fixed 40-case second-review subset, without automated outcomes. `scripts/score_registry_review.py` reconstructs the expected sample from the frozen input, rejects blank/altered/incomplete labels, and reports disagreements only after genuine submissions exist. See [the investigation guide](INVESTIGATION_GUIDE.md). No worksheet has been completed by an independent reviewer as part of this release.
