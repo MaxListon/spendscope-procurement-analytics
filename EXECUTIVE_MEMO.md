@@ -1,20 +1,33 @@
-# Procurement concentration: evidence before prioritization
+# SpendScope: evidence before supplier prioritization
 
-Use SpendScope to select records and buyer portfolios for review. Headline award value is not spending, and concentration alone is not an operational supplier-risk assessment.
+## Decision
 
-## Findings
+Use the dashboard to prioritize source-record and identity review. Do not interpret award commitments as payments, rankings as verified supplier performance, or hypothetical sensitivity scenarios as savings.
 
-- **Coverage limits the comparison.** About 32.9% of eligible award value meets conservative supplier-attribution rules. The default view compares 350 buyer identities with at least 30 attributable awards and 80% value coverage. These are publication identities, not 350 fully resolved organizations; aliases and multiple IDs can split buyers.
-- **Framework-sized records dominate totals.** The largest eligible record is a £150 billion award-value entry titled “EEM0056 Property Improvements and Decarbonisation Works Framework,” with 19 suppliers. It is counted once in recorded totals and excluded from supplier attribution. Its published amount is preserved, not assumed to be spending or automatically corrected. [Notice](https://www.contractsfinder.service.gov.uk/Notice/22498071-7872-45a0-ae26-4077553233f5).
-- **One commitment can change the interpretation.** For the HAMPSHIRE COUNTY COUNCIL buyer identity, attributable HHI is approximately 7,454. Removing the largest award reduces it to 1,066; applying a buyer-specific 99th-percentile cap reduces it to 852. The largest award contributes 86.2% of attributable value, while only 4.9% of attributable value has registered-identifier evidence. Review the notice and identities before interpreting dependency. [Largest award notice](https://www.contractsfinder.service.gov.uk/Notice/4ab0a212-b807-4efb-a6de-e45622b78064).
-- **Typical awards tell a different story from sums.** Overall median eligible awards are approximately £82,841 in 2022, £85,888 in 2023 and £82,000 in 2024. Source coverage, revisions, composition and inflation are not controlled. These are descriptive comparisons, not evidence of improved procurement.
+## Case 1 — A source instruction had become a supplier
 
-## Recommended next work
+The upgraded rules identify 193 placeholder links and 1,093 malformed registration links across the normalized source. Examples include attachment-list instructions and generic labels such as “Various.” They remain in headline award totals but cannot carry supplier shares.
 
-Review the 20 largest notices and label framework ceilings, multi-year values, possible overlaps and unresolved anomalies. Notice URLs are supplied, but linked page content has not yet been independently validated in this release.
+Using the same pinned archives, combined identity/evidence improvements changed attributable value from £325.90bn (32.9% of eligible value) to £236.35bn (23.9%). The difference is a change in analytical attribution, not reduced procurement spend or measured savings. Exact reviewed approvals also restore selected legitimate names, so the difference must not be attributed to one exclusion rule alone.
 
-Manually label supplier matches and registered-ID conflicts before relaxing exclusions. Compare buyer rankings under alternate coverage thresholds and process-clustered resampling. Obtain payment or purchasing-system data before estimating actual spend or realized savings.
+The versioned evidence review contains 31 targeted registration/name cases: 11 approvals, 2 rejections and 18 unresolved cases. Five Companies House records anchor the accepted exact names. This is not a random test set or an independent accuracy audit.
 
-Evidence: `reports/annual.csv`, `reports/buyer_concentration.csv`, `reports/buyer_sensitivity.csv`, `reports/category_sensitivity.csv`, `reports/quality.json` and `data/sources.json`.
+## Case 2 — A framework ceiling is not a payment
 
-No external stakeholder validation or measured business impact is claimed.
+The largest recorded award is £150.00bn: EEM0056 Property Improvements and Decarbonisation Works Framework. The linked notice displays the same amount and 19 suppliers, and explains a potential framework covering multiple users, lots and years. Agreement confirms a source representation, not distinct expenditure or that the ceiling will be used. The award stays in headline totals once and is not attributed to each of its suppliers.
+
+Source: https://www.contractsfinder.service.gov.uk/Notice/22498071-7872-45a0-ae26-4077553233f5
+
+Twenty large award records were selected for page review; 20 linked pages were observed and 11 records were held back from attribution for unresolved stage/context/cardinality issues or attachment-list placeholders. Original amounts are never silently rewritten. Live notice pages and pinned compiled snapshots can represent different points in a procurement's history.
+
+## Case 3 — Related awards change the stability assessment
+
+For the leading supported buyer identity by attributable value, Home Office, 311 awards belong to 266 procurement processes. R independently reproduces HHI 1,113. The process-clustered percentile interval is 622–3,313; the independent-award alternative is 626–2,521. These intervals are descriptive, with 300 draws under each sampling assumption.
+
+Removing the largest award gives HHI 790; buyer-specific 99th-percentile capping gives 541. Registration evidence covers 0.0% of this buyer identity's attributable value. Neither the ranking nor interval is a guarantee of operational supplier dependency. Review identity confidence and individual commitments before making a procurement decision.
+
+## Recommended next action
+
+Begin with source evidence and identity gaps, then request actual purchasing/payment records from a real stakeholder. Conduct an independent labeled supplier review before reporting population matching accuracy. Process clustering still misses unknown links across distinct OCIDs and missing reporting. No external stakeholder validation or measured organizational impact is claimed.
+
+Evidence: reports/quality.json, buyer_evidence.csv, buyer_sensitivity.csv, comparison_thresholds.csv, identity_decisions.csv, notice_checks.json and data/sources.json. Baseline comparison: v0.1.0, commit ee9dfed.

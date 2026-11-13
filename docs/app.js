@@ -37,7 +37,9 @@ function buyers() {
     .filter(
       (r) =>
         r.buyer_name.toLocaleLowerCase().includes(query) &&
-        ($("buyer-support").value === "all" || r.supported),
+        ($("buyer-support").value === "all" || r.supported) &&
+        ($("buyer-evidence").value === "all" ||
+          (r.registered_value_share >= 0.5 && r.registered_awards >= 10)),
     )
     .sort(
       (a, b) => b[sort] - a[sort] || a.buyer_key.localeCompare(b.buyer_key),
@@ -55,6 +57,7 @@ function buyers() {
       "HHI",
       "Largest supplier",
       "Coverage",
+      "Registration evidence",
       "Support",
     ],
     filteredBuyers
@@ -69,6 +72,7 @@ function buyers() {
           td(number(r.hhi), "num") +
           td(pct(r.top1_share), "num") +
           td(pct(r.value_coverage), "num") +
+          td(pct(r.registered_value_share), "num") +
           '<td><span class="tag ' +
           (r.supported ? "" : "warn") +
           '">' +
@@ -100,7 +104,14 @@ function awards() {
   const q = $("award-search").value.toLocaleLowerCase();
   table(
     "award-table",
-    ["Award / published notice", "Buyer", "Year", "Value", "Suppliers"],
+    [
+      "Award / published notice",
+      "Buyer",
+      "Year",
+      "Value",
+      "Suppliers",
+      "Review",
+    ],
     data.awards
       .filter((r) =>
         (r.title + " " + r.buyer_name).toLocaleLowerCase().includes(q),
@@ -122,12 +133,20 @@ function awards() {
           td(r.year) +
           td(money(r.amount), "num") +
           td(r.supplier_count, "num") +
+          td(r.notice_review_status) +
           "</tr>",
       ),
   );
 }
 function view(name) {
-  const allowed = ["overview", "buyers", "suppliers", "awards", "methods"];
+  const allowed = [
+    "overview",
+    "buyers",
+    "suppliers",
+    "awards",
+    "validation",
+    "methods",
+  ];
   if (!allowed.includes(name)) name = "overview";
   document.querySelectorAll(".view").forEach((e) => (e.hidden = e.id !== name));
   document
@@ -142,7 +161,12 @@ document
   .querySelectorAll("nav button")
   .forEach((b) => b.addEventListener("click", () => view(b.dataset.view)));
 window.addEventListener("hashchange", () => view(location.hash.slice(1)));
-for (const id of ["buyer-search", "buyer-support", "buyer-sort"])
+for (const id of [
+  "buyer-search",
+  "buyer-support",
+  "buyer-sort",
+  "buyer-evidence",
+])
   $(id).addEventListener("input", () => data && buyers());
 $("supplier-search").addEventListener("input", () => data && suppliers());
 $("award-search").addEventListener("input", () => data && awards());
@@ -156,6 +180,8 @@ $("export-buyers").addEventListener("click", () => {
     "hhi",
     "top1_share",
     "value_coverage",
+    "registered_value_share",
+    "registered_awards",
     "supported",
   ];
   // Prefix spreadsheet formula characters in text fields; preserve numeric metrics.
@@ -181,6 +207,8 @@ fetch("data.json")
     return r.json();
   })
   .then((d) => {
+    const evidence = new Map(d.buyer_evidence.map((r) => [r.buyer_key, r]));
+    d.buyers = d.buyers.map((r) => ({ ...r, ...evidence.get(r.buyer_key) }));
     data = d;
     const total = d.annual.reduce((s, r) => s + r.award_value, 0);
     const count = d.annual.reduce((s, r) => s + r.awards, 0);
@@ -200,7 +228,7 @@ fetch("data.json")
       [
         "Attributable value",
         pct(attributed / total),
-        "Sole named supplier; no ID/name conflict",
+        "After placeholder and evidence holdbacks",
       ],
       [
         "Supported buyers",
@@ -257,7 +285,14 @@ fetch("data.json")
         .filter(([k]) => k)
         .map(([k, v]) => "<li>" + esc(k) + ": " + number(v) + "</li>")
         .join("") +
-      "</ul><p>Unknown source identities and registered ID/name conflicts are excluded from supplier attribution, never from eligible award totals.</p>";
+      "</ul><p>" +
+      number(q.placeholder_supplier_links) +
+      " placeholder supplier links and " +
+      number(q.invalid_registration_links) +
+      " malformed registration links are excluded from attribution. " +
+      number(q.reviewed_registered_links) +
+      " links carry exact reviewed registration/name approvals.</p><p>Unresolved identities and notice discrepancies never remove eligible values from headline totals.</p>";
+    validation();
     buyers();
     suppliers();
     awards();
@@ -267,3 +302,89 @@ fetch("data.json")
     $("status").textContent =
       "Could not load analysis. Serve this directory over HTTP and check data.json.";
   });
+
+function validation() {
+  const q = data.quality;
+  const pairs = Object.values(q.identity_decisions).reduce((s, n) => s + n, 0);
+  $("review-kpis").innerHTML = [
+    ["Identity cases", pairs, "Targeted normalized-name/registration pairs"],
+    [
+      "Notice records selected",
+      q.notice_records_checked,
+      q.notice_pages_observed + " linked pages observed; spending not verified",
+    ],
+    [
+      "Notice holdbacks",
+      q.notice_attribution_holdbacks,
+      "Kept in totals; excluded from attribution",
+    ],
+    [
+      "Placeholder links",
+      q.placeholder_supplier_links,
+      "Attachment instructions and generic labels",
+    ],
+  ]
+    .map(
+      ([label, value, sub]) =>
+        '<article class="kpi"><span>' +
+        esc(label) +
+        "</span><strong>" +
+        number(value) +
+        "</strong><small>" +
+        esc(sub) +
+        "</small></article>",
+    )
+    .join("");
+  table(
+    "notice-review-table",
+    [
+      "Snapshot award / notice",
+      "Recorded value",
+      "Page award value",
+      "Result",
+      "Reason",
+    ],
+    data.notice_review.records.map(
+      (r) =>
+        '<tr><td><a href="' +
+        esc(r.source_url) +
+        '" target="_blank" rel="noopener noreferrer">' +
+        esc(r.snapshot_title) +
+        " ↗</a></td>" +
+        td(money(r.snapshot_amount), "num") +
+        td(
+          r.page_award_value === null
+            ? "Not observed"
+            : money(r.page_award_value),
+          "num",
+        ) +
+        td(
+          r.access_status === "not_observed"
+            ? "Not observed"
+            : r.block_attribution
+              ? "Unresolved"
+              : "Fields observed",
+        ) +
+        td(r.interpretation) +
+        "</tr>",
+    ),
+  );
+  table(
+    "threshold-table",
+    [
+      "Minimum awards",
+      "Minimum value coverage",
+      "Buyer identities",
+      "Attributable value",
+    ],
+    data.comparison_thresholds.map(
+      (r) =>
+        "<tr>" +
+        td(r.min_awards, "num") +
+        td(pct(r.min_coverage), "num") +
+        td(number(r.supported_buyers), "num") +
+        td(money(r.attributable_value), "num") +
+        "</tr>",
+    ),
+  );
+}

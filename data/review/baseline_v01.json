@@ -1,0 +1,13 @@
+{
+  "version": "0.1.0",
+  "commit": "ee9dfed",
+  "eligible_awards": 155350,
+  "award_value": 989989223308.6255,
+  "attributable_value": 325901075371.9921,
+  "supported_buyers": 350,
+  "source_hashes": [
+    "0f5307878daf7d6cf11f812543fd330bcda269dd62e95c79a59e1d74ecf1ad06",
+    "37bcbb4b40b8d037c83dd6a4c6722c669c12edacb54b85bc17ae732c92f38a07",
+    "e0e05a2a8aff108c2f510429af43c546622296706bfea5a8a83d5349c3213701"
+  ]
+}

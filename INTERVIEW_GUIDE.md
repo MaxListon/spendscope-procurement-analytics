@@ -1,23 +1,21 @@
-# Interview preparation
+# Explain SpendScope
 
-## Explain the problem
+## Problem
 
-A procurement manager wants to understand dependence on suppliers. Raw award records contain multiple suppliers and revised notices, so a naive joined sum can inflate totals and produce misleading concentration rankings. SpendScope keeps the award accounting grain separate and shows the amount of evidence behind each comparison.
+A manager wants to understand supplier dependency. Raw awards contain joint suppliers, placeholders and inconsistent registrations. A naive supplier join can multiply amounts or treat an attachment instruction as a real company. SpendScope keeps accounting grain separate from identity evidence and exposes the supported denominator.
 
-## Explain your design choices
+## Three demonstrations
 
-- SQL defines shared business metrics; Python handles ingestion, identity normalization and build orchestration; R performs statistical sensitivity analysis and independently verifies HHI.
-- A joint award remains one award in totals. Its full value is not attributed to every supplier, and equal allocations are not presented as facts.
-- Registered IDs are useful evidence, but source conflicts are visible and excluded from attribution. Exact name matching is provisional; fuzzy matches are not silently accepted.
-- A buyer can look concentrated because one large framework dominates. R tests removal and capping scenarios without asserting that the source amount is wrong.
-- Good coverage is necessary for comparison but does not prove completeness. The independent-award bootstrap also misses process-level dependence.
+1. Open the Evidence review tab and show the real attachment-list placeholder finding. Explain why the amount stays in totals while its supplier attribution is removed.
+2. Show the exact Softcat registration/name approvals, alongside a US-entity rejection and unresolved typos. Approval applies to an exact ID/name pair; it never validates every name sharing an ID.
+3. Open the R note. Explain the OCID as resampling unit, reproduce HHI from supplier totals, compare process-clustered and independent-award intervals, then inspect largest-award removal sensitivity.
 
-## Demonstrate it
+## Explain the engineering
 
-Rebuild the warehouse, query one buyer's supplier shares, reproduce its HHI in R, explain the coverage denominator, then open the original largest-award notice. Show a test where a joint award would otherwise double the total.
+Python ingests and normalizes; SQL owns business metric definitions; R independently cross-checks and quantifies sensitivity. Pinned source hashes, a build lock, staged computation, data contracts, failed-build preservation, artifact verification and gated deployment make the work reproducible. Per-file output replacement is not an atomic live-serving system.
 
-## Claims to avoid
+## Explain limitations
 
-Do not describe awarded commitments as payments, claim procurement savings, infer wrongdoing, or say name-only identities are verified companies. Do not claim the proposed schedule is actual elapsed work. Use measured counts and results from the current generated reports rather than memorizing unverified estimates.
+Award commitments are not payments or supplier revenue. Framework ceilings and overlapping call-offs can dominate totals. Name-only matches remain provisional; registration formats are checked but not all company assignments independently verified. Buyer identities can split organizations. Process resampling does not recover unknown links or missing records. No misconduct, causal effects, operational savings or external stakeholder validation is claimed.
 
-A resume bullet should be finalized only after reviewing the results and reproducing the project yourself. Scope it to what you can explain.
+The evidence sample was selected for useful high-impact review, not random accuracy estimation. Do not quote a precision/recall percentage from it. The proposed multi-month roadmap is not elapsed development time. Finalize resume bullets using results you have reproduced and can defend.

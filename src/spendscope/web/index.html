@@ -46,8 +46,11 @@
           03 / Suppliers</button
         ><button data-view="awards" aria-pressed="false">
           04 / Source explorer</button
-        ><button data-view="methods" aria-pressed="false">
-          05 / Trust & methods
+        ><button data-view="validation" aria-pressed="false">
+          05 / Evidence review
+        </button>
+        <button data-view="methods" aria-pressed="false">
+          06 / Trust & methods
         </button>
       </nav>
       <div id="status" role="status">Loading verified analysis…</div>
@@ -73,7 +76,8 @@
             <h3>Concentration is only as useful as its coverage.</h3>
             <p>
               Joint awards remain in headline totals. Supplier concentration
-              uses only awards with one named, non-colliding supplier.
+              uses one named supplier after placeholder, registration and
+              evidence checks.
             </p>
             <p>
               Buyer comparisons require at least 30 attributable awards and 80%
@@ -87,8 +91,8 @@
             <div>
               <h3>Typical award size, with uncertainty</h3>
               <p class="muted">
-                Executed R analysis · median and 95% bootstrap percentile
-                intervals
+                Executed R analysis · median and 95% process-clustered bootstrap
+                percentile intervals
               </p>
             </div>
             <a href="research.html">Read analysis ↗</a>
@@ -143,6 +147,15 @@
               <option value="supported">Supported comparisons only</option>
               <option value="all">
                 All buyers, including limited coverage
+              </option>
+            </select></label
+          ><label
+            >Identity evidence<select id="buyer-evidence">
+              <option value="all">
+                Include provisional name-only identities
+              </option>
+              <option value="registered">
+                ≥50% registration evidence and ≥10 awards
               </option>
             </select></label
           ><label
@@ -202,6 +215,74 @@
         /></label>
         <div id="award-table" class="table-wrap"></div>
       </section>
+      <section id="validation" class="view" hidden>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">EVIDENCE, NOT ASSUMPTIONS</p>
+            <h2>What survived review?</h2>
+          </div>
+          <a href="reports/notice_checks.json">Download evidence register ↓</a>
+        </div>
+        <p class="explain">
+          Targeted review of the 20 largest award records and five company
+          registrations. This is a documented case review—not a random sample,
+          an independent audit, or an estimate of population matching accuracy.
+        </p>
+        <div id="review-kpis" class="kpis"></div>
+        <div class="two">
+          <article class="panel accent">
+            <p class="eyebrow">A REAL DATA QUALITY FINDING</p>
+            <h3>An attachment instruction is not a supplier.</h3>
+            <p>
+              Several source records name an attachment list or “Various” as the
+              supplier. Those placeholders now remain in award totals but are
+              excluded from supplier shares. Invalid registration formats are
+              held back as well.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Exact approvals. Visible uncertainty.</h3>
+            <p>
+              Five Companies House records support selected exact legal names
+              and transparent Ltd/ Limited variants. Unclear abbreviations and
+              typos remain unresolved. A different subsidiary or a location is
+              not automatically merged.
+            </p>
+            <a href="reports/identity_decisions.csv"
+              >Inspect every identity decision →</a
+            >
+          </article>
+        </div>
+        <article class="panel">
+          <h3>Largest-record notice checks</h3>
+          <p class="muted">
+            Live notice pages can differ from historical snapshots. Amounts are
+            never silently overwritten. “Unresolved” records are held back from
+            supplier attribution; unavailable pages support no validation claim.
+          </p>
+          <div id="notice-review-table" class="table-wrap"></div>
+        </article>
+        <article class="panel">
+          <h3>How much do comparison thresholds matter?</h3>
+          <p class="muted">
+            Supported buyer identities under alternate minimum award counts and
+            attributable-value coverage. Screens aid comparison; they do not
+            establish complete reporting.
+          </p>
+          <div id="threshold-table" class="table-wrap"></div>
+        </article>
+        <article class="panel">
+          <h3>Keep related awards together</h3>
+          <p>
+            The R analysis now resamples complete procurement processes within
+            each category-year or buyer. It preserves within-process dependence
+            and publishes independent-award intervals for comparison. Dependence
+            between different processes and missing reporting remain unresolved.
+          </p>
+          <a href="research.html">Read the executed R analysis →</a>
+          <a href="case-studies.html">Read three business case studies →</a>
+        </article>
+      </section>
       <section id="methods" class="view" hidden>
         <p class="eyebrow">REPRODUCIBLE BY DESIGN</p>
         <h2>Trust the process. Inspect the limits.</h2>
@@ -227,8 +308,10 @@
                 2022–2024.
               </li>
               <li>
-                Attribute only sole-supplier awards with a usable identity.
-                Exclude registered ID/name conflicts from attribution.
+                Attribute only sole-supplier awards with a usable identity. Hold
+                back unresolved conflicts, placeholder suppliers and flagged
+                notice discrepancies. Apply only exact, documented
+                registration/name approvals.
               </li>
               <li>
                 Run SQL conservation checks and R sensitivity analysis before
@@ -265,6 +348,7 @@
             >.
           </p>
           <div class="download-links">
+            <a href="case-studies.html">Business case studies</a>
             <a href="https://data.open-contracting.org/en/publication/128"
               >Source registry ↗</a
             ><a href="reports/annual.csv">Annual metrics</a

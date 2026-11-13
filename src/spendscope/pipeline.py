@@ -17,6 +17,8 @@ import certifi
 import duckdb
 import pandas as pd
 from .normalize import normalize_awards, date
+from .review import apply_identity_review, attach_notice_review
+from .reporting import business_cases
 
 
 def sha(path):
@@ -131,8 +133,36 @@ def build(root, offline=False):
         awards = pd.DataFrame(rows)
         suppliers = pd.DataFrame(links)
         collisions = identity_collisions(suppliers)
+        review_root = root / "data/review"
+        if review_root.is_dir():
+            decisions = apply_identity_review(
+                suppliers, review_root / "identity_decisions.csv"
+            )
+            notice_review = attach_notice_review(
+                awards, review_root / "notice_checks.json"
+            )
+        else:
+            decisions = pd.DataFrame(columns=["decision"])
+            notice_review = {"records": []}
+            awards["notice_review_status"] = "not_reviewed"
+            awards["notice_review_block"] = False
         quality.update(
             award_rows=len(awards),
+            identity_decisions=decisions.decision.value_counts().to_dict(),
+            placeholder_supplier_links=int(
+                (suppliers.identity_basis == "placeholder").sum()
+            ),
+            invalid_registration_links=int(
+                (suppliers.identity_basis == "invalid-registration").sum()
+            ),
+            reviewed_registered_links=int(
+                (suppliers.identity_basis == "registered-reviewed").sum()
+            ),
+            notice_records_checked=len(notice_review["records"]),
+            notice_pages_observed=sum(
+                x["access_status"] == "observed" for x in notice_review["records"]
+            ),
+            notice_attribution_holdbacks=int(awards.notice_review_block.sum()),
             supplier_links=len(suppliers),
             registered_identity_collisions=len(collisions),
             exclusion_counts=awards.exclusion_reason.value_counts().to_dict(),
@@ -141,6 +171,7 @@ def build(root, offline=False):
             unknown_supplier_links=int((suppliers.identity_basis == "unknown").sum()),
         )
         con = duckdb.connect(str(stage / "warehouse.duckdb"))
+        con.execute("SET threads=1")
         con.register("award_frame", awards)
         con.register("supplier_frame", suppliers)
         con.execute("CREATE TABLE awards AS SELECT * FROM award_frame")
@@ -165,6 +196,12 @@ def build(root, offline=False):
             "concentration_bounds": con.sql(
                 "SELECT bool_and(hhi>0 AND hhi<=10000.000001 AND top1_share<=top5_share+1e-10 AND top5_share<=1.000000001 AND value_coverage<=1.000000001) FROM buyer_concentration"
             ).fetchall()[0][0],
+            "no_placeholder_attribution": con.sql(
+                "SELECT count(*)=0 FROM attributed WHERE identity_basis NOT IN ('registered','registered-reviewed','name-only')"
+            ).fetchall()[0][0],
+            "no_review_holdback_attribution": con.sql(
+                "SELECT count(*)=0 FROM attributed WHERE notice_review_block"
+            ).fetchall()[0][0],
             "no_multi_award_attribution": con.sql(
                 "SELECT count(*)=0 FROM attributed WHERE supplier_count<>1"
             ).fetchall()[0][0],
@@ -178,21 +215,34 @@ def build(root, offline=False):
             "buyer_concentration",
             "supplier_summary",
             "identity_review",
+            "buyer_evidence",
+            "comparison_thresholds",
         ]:
             df = con.sql(f"SELECT * FROM {table}").df()
             df.to_csv(stage / f"reports/{table}.csv", index=False)
             tables[table] = json.loads(df.to_json(orient="records"))
         # Deliberately exclude individual supplier names, contacts and addresses from statistical input.
         con.sql(
-            "SELECT award_key,year,category,amount FROM eligible ORDER BY award_key"
+            "SELECT award_key,ocid,year,category,amount FROM eligible ORDER BY award_key"
         ).df().to_csv(stage / "reports/statistical_input.csv", index=False)
         con.sql(
-            "SELECT award_key,buyer_key,buyer_name,supplier_key,identity_basis,amount FROM attributed ORDER BY award_key"
+            "SELECT award_key,ocid,buyer_key,buyer_name,supplier_key,identity_basis,amount FROM attributed ORDER BY award_key"
         ).df().to_csv(stage / "reports/attributed_input.csv", index=False)
         drill = con.sql(
-            "SELECT title,buyer_name,year,category,amount,supplier_count,source_url FROM eligible ORDER BY amount DESC,award_key LIMIT 200"
+            "SELECT award_key,title,buyer_name,year,category,amount,supplier_count,source_url,notice_review_status FROM eligible ORDER BY amount DESC,award_key LIMIT 200"
         ).df()
         tables["largest_awards"] = json.loads(drill.to_json(orient="records"))
+        if review_root.is_dir():
+            con.sql(
+                "SELECT s.* FROM suppliers s JOIN (SELECT supplier_key FROM suppliers WHERE identity_basis='name-only' GROUP BY supplier_key HAVING count(*)>=2) k USING(supplier_key) ORDER BY s.supplier_key,s.award_key LIMIT 300"
+            ).df().to_csv(stage / "reports/name_only_review_queue.csv", index=False)
+            shutil.copy2(
+                review_root / "identity_decisions.csv",
+                stage / "reports/identity_decisions.csv",
+            )
+            shutil.copy2(
+                review_root / "notice_checks.json", stage / "reports/notice_checks.json"
+            )
         con.close()
         quality["contracts"] = checks
         (stage / "reports/quality.json").write_text(
@@ -224,26 +274,33 @@ def build(root, offline=False):
             suppliers=tables["supplier_summary"][:200],
             awards=tables["largest_awards"],
             quality=quality,
+            buyer_evidence=tables["buyer_evidence"],
+            comparison_thresholds=tables["comparison_thresholds"],
+            notice_review=notice_review,
             statistics=r,
             source=json.loads((root / "data/sources.json").read_text()),
             scope="Active positive GBP awards dated 2022–2024 in selected compiled process snapshots. Not actual payments.",
         )
+        memo, cases = business_cases(payload, review_root / "baseline_v01.json")
+        (stage / "EXECUTIVE_MEMO.md").write_text(memo)
+        (stage / "docs/case-studies.html").write_text(cases)
         (stage / "docs/data.json").write_text(
             json.dumps(payload, allow_nan=False, separators=(",", ":"))
         )
         (stage / "reports/analysis.json").write_text(
             json.dumps(payload, indent=2, allow_nan=False) + "\n"
         )
-        for name in ("index.html", "style.css", "app.js"):
+        for name in ("index.html", "style.css", "app.js", "research.css"):
             shutil.copy2(root / f"src/spendscope/web/{name}", stage / f"docs/{name}")
         shutil.copytree(stage / "reports", stage / "docs/reports")
         inputs = {
             str(f.relative_to(root)): sha(f)
-            for folder in ("src", "sql", "R")
+            for folder in ("src", "sql", "R", "data/review", "scripts")
             for f in sorted((root / folder).rglob("*"))
             if f.is_file()
             and "__pycache__" not in str(f)
-            and f.suffix in {".py", ".html", ".css", ".js", ".sql", ".R"}
+            and f.suffix
+            in {".py", ".html", ".css", ".js", ".sql", ".R", ".csv", ".json"}
         }
         for f in ("data/sources.json", "pyproject.toml", "requirements-lock.txt"):
             inputs[f] = sha(root / f)
@@ -269,6 +326,7 @@ def build(root, offline=False):
                     target = root / f.relative_to(stage)
                     target.parent.mkdir(parents=True, exist_ok=True)
                     os.replace(f, target)
+        os.replace(stage / "EXECUTIVE_MEMO.md", root / "EXECUTIVE_MEMO.md")
         os.replace(stage / "warehouse.duckdb", root / "data/warehouse.duckdb")
         print(
             json.dumps(

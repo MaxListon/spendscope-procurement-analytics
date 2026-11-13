@@ -26,8 +26,51 @@ def date(value):
         return None
 
 
+PLACEHOLDER_NAMES = {
+    "unknown",
+    "not known",
+    "not applicable",
+    "not specified",
+    "n a",
+    "na",
+    "none",
+    "various",
+    "various suppliers",
+    "multiple",
+    "multiple suppliers",
+    "tbc",
+    "tba",
+    "see attachments",
+    "see attached",
+    "refer to the attachments area",
+}
+
+
+def is_placeholder(name):
+    return name in PLACEHOLDER_NAMES or bool(
+        re.match(
+            r"^(a list of (?:successful|succesful) suppliers|refer to (?:the )?attachments)\b",
+            name,
+        )
+    )
+
+
+def valid_registration(scheme, token):
+    if scheme == "GB-COH":
+        return bool(re.fullmatch(r"[A-Z0-9]{8}", token)) and token != "00000000"
+    if scheme == "GB-CHC":
+        return bool(re.fullmatch(r"[0-9]{1,8}", token)) and int(token) > 0
+    if scheme == "GB-SC":
+        return bool(re.fullmatch(r"SC[0-9]{6}", token)) and token != "SC000000"
+    return False
+
+
 def supplier_identity(supplier, parties):
     name = normalized_name(supplier.get("name"))
+    if not name:
+        return "unknown:" + digest(str(supplier.get("id", ""))), "unknown", ""
+    if is_placeholder(name):
+        return "placeholder:" + digest(name), "placeholder", name
     party = parties.get(supplier.get("id"), {})
     identifier = party.get("identifier") or {}
     scheme, ident = identifier.get("scheme"), identifier.get("id")
@@ -36,7 +79,12 @@ def supplier_identity(supplier, parties):
         token = str(ident).strip().upper()
         if scheme == "GB-COH" and token.isdigit():
             token = token.zfill(8)
-        return f"{scheme}:{token}", "registered", name
+        basis = (
+            "registered"
+            if valid_registration(scheme, token)
+            else "invalid-registration"
+        )
+        return f"{scheme}:{token}", basis, name
     if name:
         return "name:" + digest(name), "name-only", name
     return "unknown:" + digest(str(supplier.get("id", ""))), "unknown", ""
@@ -88,6 +136,7 @@ def normalize_awards(record):
                 supplier_key=identity,
                 identity_basis=basis,
                 supplier_name=str(supplier.get("name") or "Unknown supplier"),
+                source_supplier_name=str(supplier.get("name") or "Unknown supplier"),
                 normalized_name=name,
             )
         period = award.get("contractPeriod") or {}
@@ -131,6 +180,8 @@ def normalize_awards(record):
                 and 2000 <= start.year <= end.year <= 2100
             ),
             source_url=url,
+            notice_review_status="not_reviewed",
+            notice_review_block=False,
         )
         awards.append(row)
         for identity in identities.values():

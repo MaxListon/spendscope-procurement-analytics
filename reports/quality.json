@@ -3,8 +3,19 @@
   "unique_processes": 219121,
   "repeated_process_snapshots": 0,
   "award_rows": 173551,
+  "identity_decisions": {
+    "unresolved": 18,
+    "accept": 11,
+    "reject": 2
+  },
+  "placeholder_supplier_links": 193,
+  "invalid_registration_links": 1093,
+  "reviewed_registered_links": 1357,
+  "notice_records_checked": 20,
+  "notice_pages_observed": 20,
+  "notice_attribution_holdbacks": 11,
   "supplier_links": 215199,
-  "registered_identity_collisions": 4692,
+  "registered_identity_collisions": 4665,
   "exclusion_counts": {
     "": 155350,
     "award_date": 13929,
@@ -12,7 +23,7 @@
   },
   "missing_supplier_awards": 0,
   "multi_supplier_awards": 6245,
-  "unknown_supplier_links": 353,
+  "unknown_supplier_links": 355,
   "contracts": {
     "unique_award_keys": true,
     "no_orphan_supplier_links": true,
@@ -20,6 +31,8 @@
     "annual_count_conserves": true,
     "value_conserves": true,
     "concentration_bounds": true,
+    "no_placeholder_attribution": true,
+    "no_review_holdback_attribution": true,
     "no_multi_award_attribution": true
   }
 }

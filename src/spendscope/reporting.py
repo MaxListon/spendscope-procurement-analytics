@@ -1,0 +1,74 @@
+"""Generate decision-focused case studies from the executed evidence, not hand-entered metrics."""
+
+from html import escape
+import json
+
+
+def business_cases(data, baseline_path):
+    baseline = json.loads(baseline_path.read_text())
+    if baseline["source_hashes"] != [x["sha256"] for x in data["source"]["files"]]:
+        raise ValueError(
+            "Comparison baseline uses different source archives; revalidate it explicitly"
+        )
+    total = sum(r["award_value"] for r in data["annual"])
+    current = sum(r["attributed_value"] for r in data["buyers"])
+    old_share = baseline["attributable_value"] / baseline["award_value"]
+    share = current / total
+    q = data["quality"]
+    largest = data["notice_review"]["records"][0]
+    buyer = data["statistics"]["buyers"][0]
+    money = lambda x: f"£{x / 1e9:,.2f}bn"
+    md = f"""# SpendScope: evidence before supplier prioritization
+
+## Decision
+
+Use the dashboard to prioritize source-record and identity review. Do not interpret award commitments as payments, rankings as verified supplier performance, or hypothetical sensitivity scenarios as savings.
+
+## Case 1 — A source instruction had become a supplier
+
+The upgraded rules identify {q["placeholder_supplier_links"]:,} placeholder links and {q["invalid_registration_links"]:,} malformed registration links across the normalized source. Examples include attachment-list instructions and generic labels such as “Various.” They remain in headline award totals but cannot carry supplier shares.
+
+Using the same pinned archives, combined identity/evidence improvements changed attributable value from {money(baseline["attributable_value"])} ({old_share:.1%} of eligible value) to {money(current)} ({share:.1%}). The difference is a change in analytical attribution, not reduced procurement spend or measured savings. Exact reviewed approvals also restore selected legitimate names, so the difference must not be attributed to one exclusion rule alone.
+
+The versioned evidence review contains {sum(q["identity_decisions"].values())} targeted registration/name cases: {q["identity_decisions"].get("accept", 0)} approvals, {q["identity_decisions"].get("reject", 0)} rejections and {q["identity_decisions"].get("unresolved", 0)} unresolved cases. Five Companies House records anchor the accepted exact names. This is not a random test set or an independent accuracy audit.
+
+## Case 2 — A framework ceiling is not a payment
+
+The largest recorded award is {money(largest["snapshot_amount"])}: {largest["snapshot_title"]}. The linked notice displays the same amount and {largest["page_supplier_count"]} suppliers, and explains a potential framework covering multiple users, lots and years. Agreement confirms a source representation, not distinct expenditure or that the ceiling will be used. The award stays in headline totals once and is not attributed to each of its suppliers.
+
+Source: {largest["source_url"]}
+
+Twenty large award records were selected for page review; {q["notice_pages_observed"]} linked pages were observed and {q["notice_attribution_holdbacks"]} records were held back from attribution for unresolved stage/context/cardinality issues or attachment-list placeholders. Original amounts are never silently rewritten. Live notice pages and pinned compiled snapshots can represent different points in a procurement's history.
+
+## Case 3 — Related awards change the stability assessment
+
+For the leading supported buyer identity by attributable value, {buyer["buyer_name"]}, {buyer["awards"]} awards belong to {buyer["processes"]} procurement processes. R independently reproduces HHI {buyer["hhi"]:,.0f}. The process-clustered percentile interval is {buyer["hhi_low"]:,.0f}–{buyer["hhi_high"]:,.0f}; the independent-award alternative is {buyer["award_bootstrap_low"]:,.0f}–{buyer["award_bootstrap_high"]:,.0f}. These intervals are descriptive, with {data["statistics"]["buyer_replicates"]} draws under each sampling assumption.
+
+Removing the largest award gives HHI {buyer["hhi_without_largest"]:,.0f}; buyer-specific 99th-percentile capping gives {buyer["hhi_capped"]:,.0f}. Registration evidence covers {buyer["registered_value_share"]:.1%} of this buyer identity's attributable value. Neither the ranking nor interval is a guarantee of operational supplier dependency. Review identity confidence and individual commitments before making a procurement decision.
+
+## Recommended next action
+
+Begin with source evidence and identity gaps, then request actual purchasing/payment records from a real stakeholder. Conduct an independent labeled supplier review before reporting population matching accuracy. Process clustering still misses unknown links across distinct OCIDs and missing reporting. No external stakeholder validation or measured organizational impact is claimed.
+
+Evidence: reports/quality.json, buyer_evidence.csv, buyer_sensitivity.csv, comparison_thresholds.csv, identity_decisions.csv, notice_checks.json and data/sources.json. Baseline comparison: v{baseline["version"]}, commit {baseline["commit"]}.
+"""
+    # Markdown paragraphs are simple and source values are escaped before HTML rendering.
+    blocks = []
+    for block in md.split("\n\n"):
+        if block.startswith("# "):
+            blocks.append("<h1>" + escape(block[2:]) + "</h1>")
+        elif block.startswith("## "):
+            blocks.append("<h2>" + escape(block[3:]) + "</h2>")
+        elif block.startswith("Source: https://"):
+            url = block.removeprefix("Source: ")
+            blocks.append(
+                f'<p><a href="{escape(url, quote=True)}">Original award notice ↗</a></p>'
+            )
+        else:
+            blocks.append("<p>" + escape(block) + "</p>")
+    html = (
+        '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpendScope | Business case studies</title><link rel="stylesheet" href="research.css"></head><body><main><a href="index.html">← Dashboard</a><p class="eyebrow">BUSINESS CASE STUDIES / EXECUTED RESULTS</p>'
+        + "".join(blocks)
+        + '<p><a href="research.html">R research note ↗</a> · <a href="reports/notice_checks.json">Evidence register ↓</a></p></main></body></html>'
+    )
+    return md, html

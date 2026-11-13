@@ -1,43 +1,55 @@
-# Methodology and analytical contract
+# Analytical contract — v0.2
 
-## Universe and time
+## Universe and revision handling
 
-The input consists of the OCP 2022, 2023 and 2024 Contracts Finder compiled-process files from registry snapshot 4370, retrieved 12 November 2026. The file year is a source partition, not proof that every award in that year is covered. We resolve repeated OCIDs across selected partitions by latest parsed release timestamp. Conflicting snapshots at the same timestamp fail the build. This is a latest-available snapshot analysis, not an as-known-at-the-time reconstruction.
+Inputs are OCP snapshot 4370's 2022/2023/2024 Contracts Finder compiled-process archives, retrieved 12 November 2026. File year is a source partition, not a complete award-year register. Latest parsed release timestamp wins for repeated OCIDs across the selected files; conflicting same-timestamp snapshots fail. The current data has no repeated process snapshots. This is a latest-available snapshot analysis, not an as-known-at-the-time reconstruction.
 
-Within those processes, eligible awards have explicit active status, a finite positive numeric GBP amount and a valid award date in calendar years 2022–2024. There is no currency conversion or inflation adjustment. Each record is keyed by process ID plus award ID; missing or repeated award IDs within a compiled process fail rather than silently deduplicate.
+Eligible awards have explicit active status, finite positive numeric GBP amounts and valid award dates in 2022–2024. Exclusions are evaluated in order: status, amount, currency, date. Every excluded record remains in the local warehouse. No currency or inflation conversion occurs.
 
-Eligibility reasons are evaluated in order: non-active/missing status, invalid amount, non-GBP currency, invalid/out-of-scope award date. The quality report gives mutually exclusive counts using the first matching reason. Excluded records remain in the local warehouse.
+`awards` has one row per process + award ID. Missing/repeated award IDs within a process fail. `suppliers` is an award/identity/name bridge with no allocated amount. Exact duplicate links are removed. Totals are never summed after a multi-supplier fan-out.
 
-## Grains and denominators
+## Supplier identities and evidence decisions
 
-`awards`: one row per process + award ID. `suppliers`: one row per award + identity + normalized supplier name. Exact duplicate supplier links are removed. A bridge holds no allocated value. Eligible totals are computed from the award grain, never by summing after joining a multi-supplier bridge.
+Names use Unicode NFKC, case folding, punctuation-to-space and collapsed whitespace; legal suffixes remain. Empty names become unknown. Explicit generic labels and attachment instructions become placeholders, even when an identifier is present. Registered GB-COH/GB-CHC/GB-SC identifiers are format-checked; zero identifiers and malformed formats are held back. Format validation is not proof a registration belongs to the published company.
 
-Supplier attribution requires one supplier identity/name pair and a nonempty normalized name. Registered GB-COH, GB-CHC and GB-SC identifiers are preferred when present. Numeric Companies House identifiers are zero-padded to eight characters. Other local publication identifiers are not treated as verified company identifiers. Name-only keys use Unicode NFKC, case folding, punctuation-to-space and collapsed whitespace; legal suffixes are retained. No fuzzy or probabilistic entity merges occur.
+Nonempty, non-placeholder names without a recognized registration use exact normalized-name keys. These are provisional; unrelated organizations with the same name can merge, and aliases can split an entity. No automatic fuzzy matching or parent-company consolidation occurs.
 
-Registered IDs associated with more than one normalized name are marked `collision` across the selected data and excluded from attribution. This conservative rule can also exclude legitimate company renames. Missing-name supplier links are excluded regardless of registration evidence. Original publisher errors that already discarded a supplier cannot be reconstructed.
+Registered IDs with multiple normalized names are collision candidates. The versioned `identity_decisions.csv` approves only an exact `(registration key, normalized name)` pair when documented registration/name evidence supports it. These links become `registered-reviewed`, with a canonical display name; the source supplier name is retained. Rejected names become `review-rejected`; unresolved cases stay held back. Approved pairs do not rescue other aliases, typos or subsidiaries under the same ID.
 
-Buyer keys combine publication buyer ID with normalized buyer name. This avoids blindly trusting known source-system IDs but can split aliases/renames. No claim of complete organizational entity resolution is made.
+The current evidence review contains 31 pairs across five selected Companies House records, with 11 approvals, two rejections and 18 unresolved cases. Accepted legal names include transparent Ltd/ Limited forms and a documented previous Softcat name. Short brands, typos and unclear subsidiary wording remain unresolved. This is a targeted, development-time evidence review, not a random labeled test set, independent human audit, or estimate of population precision/recall.
 
-## Concentration
+A deterministic name-only review queue is exported for further adjudication. It is not silently applied as matching ground truth.
 
-For each buyer, aggregate attributable award values by supplier. Let s_j be each supplier's fraction of attributable value. HHI = 10,000 × sum(s_j²); top-one and top-five shares use the same denominator. Ties use stable supplier-key ordering. These metrics describe the observed buyer portfolio, not market concentration in a legal or economic market definition.
+Buyer keys combine published buyer ID and normalized buyer name. This avoids trusting source-system IDs alone but may split aliases or registered name changes. Buyers are publication identities, not fully consolidated organizations.
 
-Value coverage = attributable value / total eligible value. A supported comparison has at least 30 attributable awards and 80% value coverage. Thresholds are analyst-selected screens, not evidence that remaining selection bias is absent. All buyers remain downloadable.
+## Original notice review
 
-Awards attributed to a supplier are not supplier revenue. No group ownership consolidation, supplier performance, quality, fraud detection or measured savings is claimed.
+The top 20 eligible award records by amount and award key were selected for live notice-page review on 12 November 2026. All 20 linked pages were observed after retrying initially incomplete page loads. `notice_checks.json` records the snapshot amount/title/count, page fields, observation status, interpretation, source URL and excerpt fingerprint.
 
-## R statistical work
+Eleven observed discrepancies/stage ambiguities or attachment-list placeholders are held back from supplier attribution: superseded links, inconsistent supplier cardinality, missing award sections or title/context mismatch. These are unresolved evidence cases, not automatic corrections or proof the publisher is wrong. Live pages can differ from historical snapshots. Unavailable pages make no verification claim and do not alone cause attribution holdback. Eligible totals retain all source amounts.
 
-Category-year medians use 500 whole-award bootstrap resamples with replacement and seed 20261112. Displayed endpoints are 2.5th/97.5th percentile quantiles (R type 7). Category-year sums are recalculated after capping each award at that group's empirical 99th percentile and after excluding its largest award. These are sensitivity scenarios, not adjustments to reported data.
+Published framework values are not payments or guaranteed call-offs. Review confirms the £150 billion EEM0056 amount is displayed on its notice as a multi-supplier potential framework value; this does not validate it as distinct economic spending. Some source supplier fields explicitly refer readers to attachment lists, so a source supplier_count of one is not sufficient identity evidence.
 
-The top 30 supported buyers by attributable value receive 300 whole-award resamples with seed 20261113. R independently computes the original HHI and fails if it disagrees with SQL beyond relative tolerance 1e-8. It also reports HHI after removing the largest award and after a buyer-specific 99th percentile cap, and the fraction of value carrying registered-identifier evidence.
+## Concentration and coverage
 
-Independent award resampling does not model shared buyers, procurement-process dependence, reporting selection or unknown missing records. Intervals are descriptive resampling sensitivity, not guaranteed population confidence intervals or forecasts. Macro conditions, procurement rules, inflation and category mix confound year comparisons. No causal inference is performed.
+Attribution requires exactly one supplier, a usable nonempty name, basis `registered`, `registered-reviewed` or `name-only`, and no notice holdback. HHI = 10,000 × sum of squared supplier shares of attributable award value. Top-one and top-five use that same denominator. These describe an observed buyer portfolio, not a legally defined market.
 
-## Source issues and deferred features
+Coverage = attributable value / total eligible value. Default support is at least 30 attributable awards and 80% value coverage; nine scenarios cross award minima 10/30/50 with coverage minima 50%/80%/95%. These are screening choices, not official standards or completeness guarantees.
 
-The publisher documents missing supplier names, shared supplier IDs and unrealistic dates. We retain disclosure of those limits. A source field can be syntactically valid and still wrong. We do not automatically label extreme but valid values as errors.
+`buyer_evidence` recalculates HHI from registered and reviewed-registered links only; display requires at least 10 registered awards. It also shows the fraction of attributable value with registration evidence. The dashboard's optional registration-majority filter requires that fraction >=50% and at least 10 registered awards. This changes the selected comparison group, not the underlying source.
 
-Bidder-count analysis, contract renewal recommendations, fuzzy aliases and Companies House enrichment are deferred pending coverage checks and manual validation. Contract periods are parsed and marked valid only when ordered and within 2000–2100, but they are not promoted to an operational renewal calendar.
+## R resampling and sensitivity
 
-A notice record is an economic commitment representation. Related lots, framework ceilings and overlapping awards can mean adding notice amounts overstates distinct economic expenditure. The dashboard says recorded award value throughout.
+Within each category-year, resample complete OCIDs with replacement, keeping all of a selected process's awards with its sampled multiplicity. Compute an exactly equivalent weighted median; report 2.5th/97.5th percentile endpoints from 500 draws (R quantile type 7). Independent-award bootstrap endpoints remain in the output for comparison.
+
+For the 30 supported buyer identities with greatest attributable value, R independently reproduces SQL HHI (relative tolerance 1e-8), then runs 300 process-clustered draws. It publishes independent-award endpoints, HHI without the largest award, HHI after buyer-specific 99th-percentile capping, process counts and registration-value shares.
+
+Random generator: Mersenne-Twister / Inversion / Rejection; deterministic per-group seeds are exported. Awards are ordered by award key, process IDs sorted explicitly. Procurement processes are treated as independent within each stratum. Shared buyers, linked but differently identified call-offs, reporting selection and missing processes are not modeled. These are descriptive sensitivity intervals, not population confidence guarantees, forecasts or causal inference.
+
+Capping/removal scenarios change assumptions and never rewrite the source. Year comparisons do not adjust inflation, policy changes or procurement mix.
+
+## Reproducibility and limits
+
+Pinned source fingerprints, versioned evidence decisions, code and generated artifacts are recorded in the build manifest. DuckDB uses a single aggregation thread for stable ordering. CI independently downloads the pinned files, installs a built Python wheel, runs R, and compares full analytical JSON with relative tolerance 1e-10 and absolute tolerance 1e-7; counts, schemas and labels must agree. Environment-specific manifests/charts are checked within each build rather than required to be byte-identical across platforms.
+
+No payment dataset, realized savings, fraud model, verified supplier performance, comprehensive market coverage or external stakeholder validation is claimed. Bidder-count analysis and operational renewal recommendations remain deferred until coverage supports them.

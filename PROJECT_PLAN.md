@@ -14,3 +14,7 @@ This is a proposed part-time development and validation schedule, not a claim of
 | 15–16 | Independent review, documentation and interview rehearsal | Reviewer issues resolved; ability to explain every metric without a script |
 
 Prioritize validated business findings over adding languages or infrastructure. Do not claim realized organizational impact without an actual stakeholder deployment and measurement.
+
+## Current milestone
+
+Version 0.2 completes a targeted evidence review for five registrations and the 20 largest award records, process-clustered resampling, explicit identity holdbacks and release automation. Independent randomized supplier validation, stakeholder feedback and live purchasing-data evaluation remain future work. These milestones do not imply that the proposed weeks have elapsed.

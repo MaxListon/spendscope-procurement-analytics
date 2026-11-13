@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  background: #f4f6f3;
+  color: #17343d;
+  font: 16px/1.7 system-ui;
+}
+main {
+  max-width: 1080px;
+  margin: auto;
+  padding: 50px 26px;
+}
+h1 {
+  font-size: clamp(32px, 5vw, 54px);
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  max-width: 850px;
+}
+h2 {
+  margin-top: 42px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #087f8c;
+  font-weight: 700;
+}
+.lead {
+  font-size: 20px;
+  max-width: 850px;
+  color: #526b73;
+}
+.note {
+  background: #e4efeb;
+  padding: 24px;
+  border-left: 3px solid #087f8c;
+  border-radius: 5px;
+}
+img {
+  display: block;
+  width: 100%;
+  background: white;
+  margin-top: 30px;
+  border: 1px solid #d9e2df;
+  border-radius: 9px;
+}
+.table-wrap {
+  overflow: auto;
+  background: white;
+  border: 1px solid #d9e2df;
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+td,
+th {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #e6ece9;
+}
+th {
+  background: #e7eeeb;
+  white-space: nowrap;
+}
+a {
+  color: #086c78;
+  text-underline-offset: 4px;
+}
+.download-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+.source {
+  font-size: 12px;
+  color: #526b73;
+  margin-top: 40px;
+}
+:focus-visible {
+  outline: 3px solid #b67b27;
+  outline-offset: 4px;
+}

@@ -1,31 +1,36 @@
 # Runbook
 
-## Build and inspect
+## Build
 
-Run the README commands from the source checkout. The build verifies all compressed archives against `data/sources.json`, resolves compiled snapshots, builds a fresh DuckDB database, executes SQL contracts, runs R and renders the dashboard. The build lock rejects a second concurrent writer. All analysis must succeed before output replacement begins.
+Follow the README from the source checkout. The pipeline verifies archive fingerprints, builds a fresh warehouse, applies versioned evidence gates, executes nine SQL contracts, runs R and writes reports/dashboard assets. All computations must finish before publication begins. A single-writer lock prevents concurrent builds.
 
-Outputs are replaced one file at a time, not as an atomic multi-file website transaction. Serve a reviewed copy or deploy a completed Git commit; do not serve a directory actively rebuilding. A failed computation leaves the prior published output untouched. A crash during the replacement phase may require a full rebuild and fingerprint verification.
+Outputs are replaced per file, not as a multi-file transaction. Do not serve the directory during a rebuild; deploy a completed, verified Git commit. A crash during replacement requires a rebuild and artifact verification. Failed computations preserve the prior published files; a regression test exercises that failure case.
 
-`python scripts/verify.py` detects changed analysis code, missing outputs, stale report copies and artifact corruption against the build manifest. This is consistency checking, not cryptographic authentication by an independent party. Source archive checksums are independently checked by the pipeline.
+`python scripts/verify.py` checks analysis inputs, generated artifacts and published manifest equality. It detects stale/corrupt artifacts; it is not independent cryptographic authentication. R SVG files and session metadata may differ by platform; cross-platform analytical agreement is checked separately.
+
+## Evidence changes
+
+Review decisions must cite the same registration number and explicitly approve an exact normalized name. Never broaden approval to all aliases under an ID. Retain original supplier names, rejected/unresolved cases and rationale. Notice holdbacks require an observed issue, source URL and original snapshot match. An unavailable page supports no validation claim.
+
+A new evidence decision changes attribution and therefore requires a full rebuild, comparison review and release note. It never authorizes changing eligible award amounts. If a source revision is desired, investigate the changed archive, repin deliberately and retire or revalidate the v0.1 comparison baseline.
 
 ## Failure recovery
 
-- Source fingerprint mismatch: do not bypass it. Inspect the publisher revision, compare coverage and metrics, document the change, and deliberately update the source specification only after review.
-- `.build.lock` already exists: confirm the previous build has ended before removing a stale lock. A live build must retain its lock.
-- R package or graphics error: install the README packages in your R library; confirm `svglite` is installed for SVG output. No Python substitute should silently replace the R analysis.
-- HHI disagreement: inspect the exact buyer group and values in R inputs and SQL. Do not loosen tolerances without explaining the numerical cause.
-- Missing source: restore the exact cached archive or run an online build. Never substitute sample data under the same report labels.
-- Missing data.json in browser: start an HTTP server rather than opening index.html as a local file.
+- Source checksum mismatch: stop, investigate and deliberately repin only after review; do not disable verification.
+- Existing `.build.lock`: verify the original build has ended before removing a stale lock.
+- R package/graphics failure: install README dependencies in `.Rlibrary`; no silent Python replacement.
+- SQL/R HHI disagreement: inspect group/identity/amount inputs; do not loosen tolerances merely to pass.
+- Missing or mismatched evidence record: compare the reviewed award key, source URL and amount before changing the decision file.
+- Static load failure: serve `docs/` over HTTP; inspect `data.json` and the reported error state.
 
-## Release checklist
+## CI and publication
 
-1. Run Python tests and R regression tests.
-2. Run a full pinned-source build and artifact verification.
-3. Check desktop/mobile layouts, filters, downloads and original notice links.
-4. Review exclusion counts, attribution coverage and unusually large values.
-5. Inspect the Git diff, source attribution and actual commit author settings.
-6. Publish only reviewed tracked files. Do not upload the warehouse, raw source cache or environment directories.
+Checks runs Python tests on 3.12 and 3.14, artifact verification and JavaScript syntax checks. A separate real-data job runs on every push, pull request and manual dispatch: install the built wheel, fetch pinned originals, run R regression cases, rebuild, compare full analytical JSON with committed results, then run tests and integrity verification.
 
-CI runs unit tests, artifact verification and JavaScript syntax checks on pushes and pull requests. The manually dispatched real-data job downloads pinned sources and executes the R-inclusive rebuild. CI configuration is provided; no remote run is claimed until the project is uploaded and the run succeeds.
+Dashboard deployment runs only after Checks succeeds on a main-branch push from the same repository. It checks out the exact verified head SHA, verifies artifacts again and deploys `docs/` through GitHub Pages. Failed checks and pull requests do not publish. Read the actual run status before claiming remote validation.
 
-No secrets, authenticated data access, hosted database, telemetry service or scoring API are required. Static hosting has no background refresh: updated data require a reviewed rebuild and deployment.
+A static deployment has no background updates. Source refreshes require reviewed rebuilds. No secrets, authenticated source feeds, hosted database or customer upload flow are required.
+
+## Release
+
+Run Python/R tests, full-source rebuild, result comparison and artifact verification; check mobile/desktop filters, downloads, evidence tables and R report; inspect attribution/coverage changes; review tracked files and Git author; then commit, publish and verify the remote checks, deployed content and listed contributors. Source publishers retain their data attribution separately from Git authorship.
