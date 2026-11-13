@@ -31,3 +31,19 @@ All monetary fields are nominal GBP recorded award commitments. No field represe
 | buyer_sensitivity.hhi_without_largest / hhi_capped | Removal/capping sensitivity scenarios |
 
 `reports/` holds machine-readable outputs; `docs/reports/` holds published copies. Raw archives and the local DuckDB warehouse are excluded from Git. Evidence decisions under `data/review/` are tracked analysis inputs, not mutable dashboard user data.
+
+
+Version 0.3 additions:
+
+| Field / artifact | Meaning |
+|---|---|
+| suppliers.identity_basis = registry-audit-conflict | Observed registry-name disagreement held back from attribution |
+| registry_audit.summary.confirmed_agreement_rate | Compatible records / all 40 sampled registration identities |
+| confirmed_agreement_wilson | Wilson sampling interval with unobserved records not counted as confirmed |
+| observed_only_agreement_rate | Compatible / observed records, presented with its different denominator |
+| missing_evidence_bounds | Lowest/highest compatibility proportion under unknown registry outcomes; not a confidence interval |
+| process_cluster | Connected component using only explicit, observed in-universe OCID links |
+| process_linkage.json | Declaration, missing-identifier and resolvable-link coverage |
+| category_sensitivity.buyer_bootstrap_low/high | Buyer-publication-identity resampling alternative |
+| buyer_sensitivity.quarter_bootstrap_low/high | Calendar-quarter resampling alternative; null below four quarters |
+| *_sensitivity.linked_bootstrap_low/high | Declared-component alternative; equals process assumption if partitions coincide |

@@ -1,4 +1,4 @@
-# Analytical contract — v0.2
+# Analytical contract — v0.3
 
 ## Universe and revision handling
 
@@ -53,3 +53,18 @@ Capping/removal scenarios change assumptions and never rewrite the source. Year 
 Pinned source fingerprints, versioned evidence decisions, code and generated artifacts are recorded in the build manifest. DuckDB uses a single aggregation thread for stable ordering. CI independently downloads the pinned files, installs a built Python wheel, runs R, and compares full analytical JSON with relative tolerance 1e-10 and absolute tolerance 1e-7; counts, schemas and labels must agree. Environment-specific manifests/charts are checked within each build rather than required to be byte-identical across platforms.
 
 No payment dataset, realized savings, fraud model, verified supplier performance, comprehensive market coverage or external stakeholder validation is claimed. Bidder-count analysis and operational renewal recommendations remain deferred until coverage supports them.
+
+
+## Frozen random registry audit
+
+Before inspecting the sampled registry pages, version 0.2's attributable, unreviewed GB-COH identities were deduplicated into a frame of 11,517 registrations. Select the 40 lowest SHA-256 values of `20261113-registration-audit-v1|supplier_key`, without replacement. The seed is an arbitrary identifier, not an observation date. `random_registry_audit.json` records the frame hash, selection baseline commit, selected keys, original names, evidence URLs, observed legal/former names, dated outcomes and source-page fingerprints. The pipeline recomputes the pre-remediation frame and sample before applying holdbacks.
+
+Outcomes: 36 compatible registry-name records, two name conflicts and two unobserved registry records. The denominator remains 40. Confirmed agreement is 90.0%, with a binomial Wilson 95% interval of 76.9%–96.0%; ignoring the small finite-population correction is conservative. Observed-only agreement is 36/38 = 94.7%, shown alongside the full-denominator result rather than replacing it. Missing-evidence identification bounds are 90%–95%, separate from sampling uncertainty. Those bounds assume either neither or both unobserved records have compatible evidence.
+
+This measures documented name compatibility within the restricted registration frame. It does not establish correct supplier assignment despite name agreement, precision/recall of provisional name-only matching, independence between corporate groups, or external professional validation. Current/former legal-name agreement and transparent abbreviations are documented, not globally generalized as fuzzy merge rules. The two observed conflicts are held back from attribution as `registry-audit-conflict`; raw links/amounts remain. Reported audit rates describe the frozen pre-remediation sample, not independently tested post-remediation accuracy.
+
+## Dependence across OCIDs
+
+The source has 249 related-process declarations, all without usable OCID identifiers; zero observed edges can be resolved within this universe. The linkage code only joins an explicit `scheme=ocid` identifier to an observed target. Self-links, unsupported/missing identifiers and out-of-universe targets are counted, never converted into inferred links. A relationship label or local related-process ID is not a target OCID.
+
+Category-year results additionally resample entire buyer publication identities, retaining their different processes together. Buyer-HHI results additionally resample calendar quarters when at least four quarters exist; there are at most twelve quarters, so these exploratory intervals can be unstable. Main process-based intervals remain comparable with v0.2. Declared-component intervals equal the process assumption when no cross-process edge is resolvable; no separate precision improvement is claimed in that case. Buyer aliases, unobserved framework relationships, common shocks across buyers and missing reporting remain unresolved.

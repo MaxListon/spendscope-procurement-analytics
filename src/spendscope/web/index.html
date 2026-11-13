@@ -228,6 +228,23 @@
           registrations. This is a documented case review—not a random sample,
           an independent audit, or an estimate of population matching accuracy.
         </p>
+        <article class="panel">
+          <p class="eyebrow">REPRODUCIBLE RANDOM SAMPLE</p>
+          <h3>Does a published registration agree with its supplier name?</h3>
+          <div id="random-audit-summary"></div>
+          <p class="muted">
+            A frozen sample of previously unreviewed GB-COH identities. This
+            checks registry-name consistency, not true-entity precision/recall.
+            Name-only identities are outside the sampling frame. Missing
+            evidence stays in the denominator.
+          </p>
+          <div id="random-audit-table" class="table-wrap"></div>
+          <p>
+            <a href="reports/registry_audit.json"
+              >Full sample, selection seed and evidence ↓</a
+            >
+          </p>
+        </article>
         <div id="review-kpis" class="kpis"></div>
         <div class="two">
           <article class="panel accent">
@@ -277,8 +294,10 @@
             The R analysis now resamples complete procurement processes within
             each category-year or buyer. It preserves within-process dependence
             and publishes independent-award intervals for comparison. Dependence
-            between different processes and missing reporting remain unresolved.
+            between processes is explored with buyer-wide and calendar-quarter
+            resampling; unknown links and missing reporting remain unresolved.
           </p>
+          <div id="linkage-summary" class="muted"></div>
           <a href="research.html">Read the executed R analysis →</a>
           <a href="case-studies.html">Read three business case studies →</a>
         </article>

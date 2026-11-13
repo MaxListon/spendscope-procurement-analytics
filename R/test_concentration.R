@@ -17,3 +17,8 @@ stopifnot(inherits(try(hhi(c(0, 1), c("A", "B")), silent = TRUE), "try-error"))
 x <- c("True", "False", "TRUE", "FALSE")
 stopifnot(identical(tolower(x) == "true", c(TRUE, FALSE, TRUE, FALSE)))
 cat("R HHI, weighted median and process-cluster regression checks passed.\n")
+# Different processes belonging to the same buyer retain a common multiplicity.
+buyer_weights <- cluster_weights(c("buyerA", "buyerA", "buyerB"), c(1L, 1L))
+stopifnot(identical(buyer_weights, c(2L, 2L, 0L)))
+# Calendar grouping never splits records in the same quarter.
+stopifnot(identical(cluster_weights(c("2022-Q1", "2022-Q1", "2022-Q2"), c(2L, 2L)), c(0L, 0L, 2L)))

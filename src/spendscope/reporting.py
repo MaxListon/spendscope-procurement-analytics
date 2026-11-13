@@ -17,6 +17,8 @@ def business_cases(data, baseline_path):
     q = data["quality"]
     largest = data["notice_review"]["records"][0]
     buyer = data["statistics"]["buyers"][0]
+    audit = data["registry_audit"]["summary"]
+    linkage = data["process_linkage"]
     money = lambda x: f"£{x / 1e9:,.2f}bn"
     md = f"""# SpendScope: evidence before supplier prioritization
 
@@ -32,6 +34,12 @@ Using the same pinned archives, combined identity/evidence improvements changed 
 
 The versioned evidence review contains {sum(q["identity_decisions"].values())} targeted registration/name cases: {q["identity_decisions"].get("accept", 0)} approvals, {q["identity_decisions"].get("reject", 0)} rejections and {q["identity_decisions"].get("unresolved", 0)} unresolved cases. Five Companies House records anchor the accepted exact names. This is not a random test set or an independent accuracy audit.
 
+## Random validation — a frozen registry sample
+
+A deterministic sample of {audit["sample_size"]} from {audit["frame_count"]:,} previously unreviewed GB-COH identities produced {audit["outcomes"]["compatible"]} compatible registry-name records, {audit["outcomes"]["name_conflict"]} name conflicts and {audit["outcomes"]["not_observed"]} unobserved records. Confirmed agreement is {audit["confirmed_agreement_rate"]:.1%}, with a 95% Wilson interval of {audit["confirmed_agreement_wilson"][0]:.1%}–{audit["confirmed_agreement_wilson"][1]:.1%}. Missing-evidence bounds are {audit["missing_evidence_bounds"][0]:.1%}–{audit["missing_evidence_bounds"][1]:.1%}. The sample was frozen before its registry observations; subsequent conflict holdbacks are documented remediation, not a claim of independently measured post-remediation accuracy.
+
+This is registry-name consistency in a restricted registration-evidence frame, not precision/recall of all supplier matching. Name-only identities, source assignment errors despite a matching legal name, and independent professional validation remain outside this result.
+
 ## Case 2 — A framework ceiling is not a payment
 
 The largest recorded award is {money(largest["snapshot_amount"])}: {largest["snapshot_title"]}. The linked notice displays the same amount and {largest["page_supplier_count"]} suppliers, and explains a potential framework covering multiple users, lots and years. Agreement confirms a source representation, not distinct expenditure or that the ceiling will be used. The award stays in headline totals once and is not attributed to each of its suppliers.
@@ -45,6 +53,10 @@ Twenty large award records were selected for page review; {q["notice_pages_obser
 For the leading supported buyer identity by attributable value, {buyer["buyer_name"]}, {buyer["awards"]} awards belong to {buyer["processes"]} procurement processes. R independently reproduces HHI {buyer["hhi"]:,.0f}. The process-clustered percentile interval is {buyer["hhi_low"]:,.0f}–{buyer["hhi_high"]:,.0f}; the independent-award alternative is {buyer["award_bootstrap_low"]:,.0f}–{buyer["award_bootstrap_high"]:,.0f}. These intervals are descriptive, with {data["statistics"]["buyer_replicates"]} draws under each sampling assumption.
 
 Removing the largest award gives HHI {buyer["hhi_without_largest"]:,.0f}; buyer-specific 99th-percentile capping gives {buyer["hhi_capped"]:,.0f}. Registration evidence covers {buyer["registered_value_share"]:.1%} of this buyer identity's attributable value. Neither the ranking nor interval is a guarantee of operational supplier dependency. Review identity confidence and individual commitments before making a procurement decision.
+
+## Dependence beyond one process
+
+The source provides {linkage["declarations"]} related-process declarations but only {linkage["resolved_edges"]} usable in-universe OCID links. No graph edges are invented from missing identifiers. R therefore also publishes buyer-clustered category medians and calendar-quarter buyer-HHI sensitivity, preserving dependence under broader alternative assumptions. These do not establish true framework/call-off relationships.
 
 ## Recommended next action
 

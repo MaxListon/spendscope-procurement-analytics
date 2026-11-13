@@ -304,6 +304,53 @@ fetch("data.json")
   });
 
 function validation() {
+  const audit = data.registry_audit.summary;
+  $("random-audit-summary").innerHTML =
+    "<p><strong>" +
+    audit.outcomes.compatible +
+    " of " +
+    audit.sample_size +
+    " records (" +
+    pct(audit.confirmed_agreement_rate) +
+    ")</strong> have compatible legal-name evidence. " +
+    audit.outcomes.name_conflict +
+    " name conflicts and " +
+    audit.outcomes.not_observed +
+    " unobserved registry records remain explicit.</p><p>95% Wilson interval for confirmed agreement: " +
+    pct(audit.confirmed_agreement_wilson[0]) +
+    "–" +
+    pct(audit.confirmed_agreement_wilson[1]) +
+    ". Observed-only agreement is " +
+    pct(audit.observed_only_agreement_rate) +
+    "; missing-evidence bounds are " +
+    pct(audit.missing_evidence_bounds[0]) +
+    "–" +
+    pct(audit.missing_evidence_bounds[1]) +
+    ". Frame: " +
+    number(audit.frame_count) +
+    " distinct registration identities.</p>";
+  table(
+    "random-audit-table",
+    ["Published supplier", "Registry legal name", "Outcome", "Evidence"],
+    data.registry_audit.records.map(
+      (r) =>
+        "<tr>" +
+        td(r.supplier_name) +
+        td(r.registry_name || "Not observed") +
+        td(r.outcome) +
+        '<td><a href="' +
+        esc(r.evidence_url) +
+        '" target="_blank" rel="noopener noreferrer">' +
+        esc(r.supplier_key) +
+        " ↗</a></td></tr>",
+    ),
+  );
+  const links = data.process_linkage;
+  $("linkage-summary").textContent =
+    number(links.declarations) +
+    " related-process declarations; " +
+    number(links.resolved_edges) +
+    " resolvable links within the selected universe. Missing identifiers are not inferred.";
   const q = data.quality;
   const pairs = Object.values(q.identity_decisions).reduce((s, n) => s + n, 0);
   $("review-kpis").innerHTML = [

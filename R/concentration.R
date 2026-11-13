@@ -23,6 +23,14 @@ concentration_analysis <- function(reports) {
       j <- sample.int(length(x), length(x), replace = TRUE)
       hhi(x[j], supplier[j])
     })
+    set.seed(seed + 2L)
+    quarter_count <- length(unique(g$award_quarter))
+    quarter_draws <- if (quarter_count >= 4) replicate(300, hhi(x, supplier, cluster_weights(g$award_quarter))) else rep(NA_real_, 300)
+    quarter_interval <- if (quarter_count >= 4) quantile(quarter_draws, c(.025, .975), names = FALSE, type = 7) else c(NA_real_, NA_real_)
+    linked_count <- length(unique(g$process_cluster))
+    set.seed(seed)
+    linked_draws <- if (linked_count < length(unique(g$ocid))) replicate(300, hhi(x, supplier, cluster_weights(g$process_cluster))) else clustered
+    linked_interval <- quantile(linked_draws, c(.025, .975), names = FALSE, type = 7)
     interval <- quantile(clustered, c(.025, .975), names = FALSE, type = 7)
     alternative <- quantile(independent, c(.025, .975), names = FALSE, type = 7)
     largest <- which.max(x)
@@ -30,6 +38,9 @@ concentration_analysis <- function(reports) {
     data.frame(
       buyer_key = buyer$buyer_key, buyer_name = buyer$buyer_name,
       awards = length(x), processes = length(unique(g$ocid)), seed = seed,
+      quarters = quarter_count, declared_components = linked_count,
+      quarter_bootstrap_low = quarter_interval[1], quarter_bootstrap_high = quarter_interval[2],
+      linked_bootstrap_low = linked_interval[1], linked_bootstrap_high = linked_interval[2],
       hhi = point, hhi_low = interval[1], hhi_high = interval[2],
       award_bootstrap_low = alternative[1], award_bootstrap_high = alternative[2],
       hhi_without_largest = hhi(x[-largest], supplier[-largest]),

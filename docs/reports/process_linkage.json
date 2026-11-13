@@ -1,0 +1,12 @@
+{
+  "processes_with_declarations": 249,
+  "declarations": 249,
+  "missing_or_non_ocid_identifier": 249,
+  "target_outside_universe": 0,
+  "self_links": 0,
+  "processes": 219121,
+  "resolved_edges": 0,
+  "connected_components": 219121,
+  "processes_in_linked_components": 0,
+  "interpretation": "Only declared OCID links with observed in-universe targets are joined. Missing identifiers do not justify inferred framework relationships."
+}

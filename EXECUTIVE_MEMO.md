@@ -12,6 +12,12 @@ Using the same pinned archives, combined identity/evidence improvements changed 
 
 The versioned evidence review contains 31 targeted registration/name cases: 11 approvals, 2 rejections and 18 unresolved cases. Five Companies House records anchor the accepted exact names. This is not a random test set or an independent accuracy audit.
 
+## Random validation — a frozen registry sample
+
+A deterministic sample of 40 from 11,517 previously unreviewed GB-COH identities produced 36 compatible registry-name records, 2 name conflicts and 2 unobserved records. Confirmed agreement is 90.0%, with a 95% Wilson interval of 76.9%–96.0%. Missing-evidence bounds are 90.0%–95.0%. The sample was frozen before its registry observations; subsequent conflict holdbacks are documented remediation, not a claim of independently measured post-remediation accuracy.
+
+This is registry-name consistency in a restricted registration-evidence frame, not precision/recall of all supplier matching. Name-only identities, source assignment errors despite a matching legal name, and independent professional validation remain outside this result.
+
 ## Case 2 — A framework ceiling is not a payment
 
 The largest recorded award is £150.00bn: EEM0056 Property Improvements and Decarbonisation Works Framework. The linked notice displays the same amount and 19 suppliers, and explains a potential framework covering multiple users, lots and years. Agreement confirms a source representation, not distinct expenditure or that the ceiling will be used. The award stays in headline totals once and is not attributed to each of its suppliers.
@@ -25,6 +31,10 @@ Twenty large award records were selected for page review; 20 linked pages were o
 For the leading supported buyer identity by attributable value, Home Office, 311 awards belong to 266 procurement processes. R independently reproduces HHI 1,113. The process-clustered percentile interval is 622–3,313; the independent-award alternative is 626–2,521. These intervals are descriptive, with 300 draws under each sampling assumption.
 
 Removing the largest award gives HHI 790; buyer-specific 99th-percentile capping gives 541. Registration evidence covers 0.0% of this buyer identity's attributable value. Neither the ranking nor interval is a guarantee of operational supplier dependency. Review identity confidence and individual commitments before making a procurement decision.
+
+## Dependence beyond one process
+
+The source provides 249 related-process declarations but only 0 usable in-universe OCID links. No graph edges are invented from missing identifiers. R therefore also publishes buyer-clustered category medians and calendar-quarter buyer-HHI sensitivity, preserving dependence under broader alternative assumptions. These do not establish true framework/call-off relationships.
 
 ## Recommended next action
 

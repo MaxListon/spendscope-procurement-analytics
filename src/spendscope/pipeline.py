@@ -19,6 +19,7 @@ import pandas as pd
 from .normalize import normalize_awards, date
 from .review import apply_identity_review, attach_notice_review
 from .reporting import business_cases
+from .validation import registry_audit, related_process_clusters
 
 
 def sha(path):
@@ -123,10 +124,15 @@ def build(root, offline=False):
         (stage / "docs").mkdir()
         paths = get_sources(root, offline)
         latest, quality = load_latest(paths)
+        cluster_map, linkage = related_process_clusters(
+            {k: v[2] for k, v in latest.items()}
+        )
         rows = []
         links = []
         for ocid in sorted(latest):
             a, s = normalize_awards(latest[ocid][2])
+            for award in a:
+                award["process_cluster"] = cluster_map[ocid]
             rows.extend(a)
             links.extend(s)
         del latest
@@ -176,6 +182,13 @@ def build(root, offline=False):
         con.register("supplier_frame", suppliers)
         con.execute("CREATE TABLE awards AS SELECT * FROM award_frame")
         con.execute("CREATE TABLE suppliers AS SELECT * FROM supplier_frame")
+        audit_spec, audit_summary = (
+            registry_audit(con, review_root / "random_registry_audit.json")
+            if (review_root / "random_registry_audit.json").exists()
+            else ({"records": []}, {})
+        )
+        quality["registry_audit"] = audit_summary
+        quality["process_linkage"] = linkage
         con.execute((root / "sql/marts.sql").read_text())
         checks = {
             "unique_award_keys": con.sql(
@@ -195,6 +208,9 @@ def build(root, offline=False):
             ).fetchall()[0][0],
             "concentration_bounds": con.sql(
                 "SELECT bool_and(hhi>0 AND hhi<=10000.000001 AND top1_share<=top5_share+1e-10 AND top5_share<=1.000000001 AND value_coverage<=1.000000001) FROM buyer_concentration"
+            ).fetchall()[0][0],
+            "no_registry_conflict_attribution": con.sql(
+                "SELECT count(*)=0 FROM attributed WHERE identity_basis='registry-audit-conflict'"
             ).fetchall()[0][0],
             "no_placeholder_attribution": con.sql(
                 "SELECT count(*)=0 FROM attributed WHERE identity_basis NOT IN ('registered','registered-reviewed','name-only')"
@@ -223,10 +239,10 @@ def build(root, offline=False):
             tables[table] = json.loads(df.to_json(orient="records"))
         # Deliberately exclude individual supplier names, contacts and addresses from statistical input.
         con.sql(
-            "SELECT award_key,ocid,year,category,amount FROM eligible ORDER BY award_key"
+            "SELECT award_key,ocid,process_cluster,buyer_key,year,category,amount FROM eligible ORDER BY award_key"
         ).df().to_csv(stage / "reports/statistical_input.csv", index=False)
         con.sql(
-            "SELECT award_key,ocid,buyer_key,buyer_name,supplier_key,identity_basis,amount FROM attributed ORDER BY award_key"
+            "SELECT award_key,ocid,process_cluster,substr(award_date,1,4)||'-Q'||cast(ceil(cast(substr(award_date,6,2) as integer)/3.0) as integer) AS award_quarter,buyer_key,buyer_name,supplier_key,identity_basis,amount FROM attributed ORDER BY award_key"
         ).df().to_csv(stage / "reports/attributed_input.csv", index=False)
         drill = con.sql(
             "SELECT award_key,title,buyer_name,year,category,amount,supplier_count,source_url,notice_review_status FROM eligible ORDER BY amount DESC,award_key LIMIT 200"
@@ -244,6 +260,13 @@ def build(root, offline=False):
                 review_root / "notice_checks.json", stage / "reports/notice_checks.json"
             )
         con.close()
+        (stage / "reports/registry_audit.json").write_text(
+            json.dumps({"summary": audit_summary, "sample": audit_spec}, indent=2)
+            + "\n"
+        )
+        (stage / "reports/process_linkage.json").write_text(
+            json.dumps(linkage, indent=2) + "\n"
+        )
         quality["contracts"] = checks
         (stage / "reports/quality.json").write_text(
             json.dumps(quality, indent=2) + "\n"
@@ -262,7 +285,11 @@ def build(root, offline=False):
             check=True,
             env=r_env,
         )
-        for required in ("category-analysis.svg", "research.html"):
+        for required in (
+            "category-analysis.svg",
+            "dependence-analysis.svg",
+            "research.html",
+        ):
             artifact = stage / "docs" / required
             if not artifact.is_file() or artifact.stat().st_size == 0:
                 raise ValueError(f"R output missing: {required}")
@@ -277,6 +304,8 @@ def build(root, offline=False):
             buyer_evidence=tables["buyer_evidence"],
             comparison_thresholds=tables["comparison_thresholds"],
             notice_review=notice_review,
+            registry_audit={"summary": audit_summary, "records": audit_spec["records"]},
+            process_linkage=linkage,
             statistics=r,
             source=json.loads((root / "data/sources.json").read_text()),
             scope="Active positive GBP awards dated 2022–2024 in selected compiled process snapshots. Not actual payments.",
