@@ -2,6 +2,7 @@
 
 - Extend the original frozen sample to 200 identities, preserving the original 40-case audit. Record 160 additional automated official registry observations with extraction checks, timestamps, response fingerprints and a follow-up queue. Do not claim additional human-reviewed labels or change attribution automatically.
 - Add conservative source-refresh change review with explicit review-required exit status, operational thresholds, support transitions and largest HHI deltas. Strict same-source reproducibility checks remain unchanged.
+- Add a parameterized SQL case-evidence export keyed to the exact buyer publication identity, avoiding ambiguous homonymous buyer names.
 - Add a three-minute dashboard tour, pipeline architecture, generated decision worksheet, expanded validation protocol and task-based usability packet. No outside feedback or newer procurement snapshot is claimed.
 
 # Changelog

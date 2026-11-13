@@ -6,7 +6,7 @@ Recruit 3–5 people, preferably including a procurement analyst and someone unf
 
 | Task | Observable completion | Target |
 |---|---|---|
-| Find Home Office in Buyer exposure | Correct identity and eligible/attributable coverage located | Within 90 seconds |
+| Find Home Office in Buyer exposure | 311-award publication identity and eligible/attributable coverage located | Within 90 seconds |
 | Explain what recorded award value means | Does not call it payments or realized revenue | Without prompting |
 | Challenge the concentration conclusion | Finds process interval and largest-award sensitivity | Within 2 minutes |
 | Inspect validation evidence | Separates original audit from automated name screening | Correct denominator |

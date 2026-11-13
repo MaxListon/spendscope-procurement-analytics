@@ -324,6 +324,13 @@ def build(root, offline=False):
             if not artifact.is_file() or artifact.stat().st_size == 0:
                 raise ValueError(f"R output missing: {required}")
         r = json.loads((stage / "reports/r_analysis.json").read_text())
+        with duckdb.connect(
+            str(stage / "warehouse.duckdb"), read_only=True
+        ) as case_con:
+            case_con.execute(
+                (root / "sql/decision_case.sql").read_text(),
+                [r["buyers"][0]["buyer_key"]],
+            ).df().to_csv(stage / "reports/decision_case_awards.csv", index=False)
         payload = dict(
             annual=tables["annual"],
             categories=tables["categories"],

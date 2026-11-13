@@ -58,7 +58,7 @@ Removing the largest award gives HHI {buyer["hhi_without_largest"]:,.0f}; buyer-
 
 Question: does {buyer["buyer_name"]}'s observed portfolio justify immediately changing supplier strategy? Recommendation: prioritize verification, not a supplier change. The process interval spans {buyer["hhi_low"]:,.0f}–{buyer["hhi_high"]:,.0f}; the largest-award sensitivity changes the point estimate from {buyer["hhi"]:,.0f} to {buyer["hhi_without_largest"]:,.0f}. That instability and {buyer["registered_value_share"]:.1%} registration-evidence coverage make an operational dependency claim premature.
 
-Analyst handoff: download buyer metrics and buyer sensitivity; locate the buyer in the Source explorer; inspect its largest commitments and original notices. Ask the stakeholder for supplier legal IDs, framework/call-off relationships, actual payments, service criticality and substitution lead times. Reconcile these to the observed publication identity before escalating any supplier-risk recommendation.
+Analyst handoff: download buyer metrics and buyer sensitivity. Match buyer_key {buyer["buyer_key"]} to the case's 20-largest-attributable-commitments download; buyer names alone are not unique. This is a selected evidence queue, not the complete {buyer["awards"]}-award portfolio. Inspect its original notice links and identity basis. Ask the stakeholder for supplier legal IDs, framework/call-off relationships, actual payments, service criticality and substitution lead times. Reconcile these to the observed publication identity before escalating any supplier-risk recommendation.
 
 Acceptance gate: do not recommend a supplier intervention until identity gaps and overlapping commitments are resolved, payment records reconcile to the intended period, and a procurement owner confirms service criticality. Record unresolved discrepancies. This is a proposed decision workflow, not a stakeholder-endorsed action or measured savings.
 
@@ -93,6 +93,6 @@ Evidence: reports/quality.json, buyer_evidence.csv, buyer_sensitivity.csv, compa
     html = (
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpendScope | Business case studies</title><link rel="stylesheet" href="research.css"></head><body><main><a href="index.html">← Dashboard</a><p class="eyebrow">BUSINESS CASE STUDIES / EXECUTED RESULTS</p>'
         + "".join(blocks)
-        + '<p><a href="research.html">R research note ↗</a> · <a href="reports/notice_checks.json">Evidence register ↓</a></p></main></body></html>'
+        + '<p><a href="reports/decision_case_awards.csv">Case evidence: 20 largest attributable commitments ↓</a></p><p><a href="research.html">R research note ↗</a> · <a href="reports/notice_checks.json">Evidence register ↓</a></p></main></body></html>'
     )
     return md, html
