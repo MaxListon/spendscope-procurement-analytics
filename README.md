@@ -73,7 +73,6 @@ The process bootstrap keeps awards linked by the same OCID together. Broader buy
 | [Verification](VERIFICATION.md) | Completed checks and remaining review |
 | [Runbook](RUNBOOK.md) | Rebuild, failure recovery, CI and gated deployment |
 | [Development roadmap](PROJECT_PLAN.md) | Proposed multi-month validation schedule, not elapsed work |
-| [Interview guide](INTERVIEW_GUIDE.md) | Explain the decisions and their limits |
 
 ## Source and license
 
