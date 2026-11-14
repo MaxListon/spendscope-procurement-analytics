@@ -51,9 +51,9 @@ Python dependencies are pinned in `requirements-lock.txt`; executed R versions a
 
 **Recorded award value is not actual payments, annual expenditure or realized supplier revenue.** Framework ceilings, overlapping commitments, missing reporting and publication changes can dominate sums.
 
-Default buyer support requires at least 30 attributable awards and 80% eligible-value coverage. Registration evidence is displayed separately. Non-colliding published registrations are format-checked, not all independently verified. Name-only identities remain provisional. A published buyer ID/name pair is not necessarily a fully resolved organization.
+Default buyer support requires at least 30 attributable awards and 80% eligible-value coverage. Registration evidence is displayed separately: non-colliding published registrations are format-checked rather than independently verified, name-only identities stay provisional, and a published buyer ID/name pair doesn't necessarily mean a fully resolved organization.
 
-The process bootstrap keeps awards linked by the same OCID together. Broader buyer/quarter alternatives test dependence across processes, while a declared-link audit refuses to infer missing relationships. None identifies all related call-offs or repairs missing data. No causal effect, misconduct, procurement savings or live operational deployment is claimed.
+The process bootstrap keeps awards linked by the same OCID together. Broader buyer/quarter alternatives test dependence across processes, while a declared-link audit refuses to infer missing relationships. None of this identifies every related call-off or repairs missing data, and it isn't a claim of causal effect, misconduct, procurement savings, or live operational deployment.
 
 ## Inspect the work
 
